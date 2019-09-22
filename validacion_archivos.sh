@@ -5,9 +5,21 @@
 function validar_Existe_NoVacio_Regular
 {
 
-if [ -s "$archivo" ] && [ -r "$archivo" ] && [ -f "$archivo" ]; then					#Existe y no esta vacío && Exite y puede leerse 
-	return 0
+if [[ -s "$archivo" ]] 
+then
+	if [[ -r "$archivo" ]]; 
+	then
+		if [[ -f "$archivo" ]]; 
+		then
+			return 0								#Existe y no esta vacío && Exite y puede leerse 
+		fi
+		# Grabar en el log el nombre del archivo rechazado. Motivo: No es un archivo normal
+		return -1
+	fi
+	# Grabar en el log el nombre del archivo rechazado. Motivo: No es legible
+	return -1
 fi
+# Grabar en el log el nombre del archivo rechazado. Motivo: Archivo vacio
 return -1
 
 }
@@ -58,6 +70,7 @@ do
 			then
 				echo "archivo valido"			# Los deja donde estan pq están bien
 				CONTADOR=0
+				procesar
 				# PROCESAR LAS TRANSACCIONES y a GRABAR EL CIERRE DE LOTE
 			else
 				mv $file $rechazados			# Mueve a la carpeta de rechazados
@@ -74,6 +87,13 @@ return 0
 
 }
 
+function procesar
+{
+mv $file $procesados
+return 0
+
+}
+
 
 # Cuerpo Principal
 echo
@@ -83,6 +103,7 @@ echo
 carpetas=$(pwd)
 aceptados="$carpetas/aceptados"
 rechazados="$carpetas/rechazados"
+procesados="$carpetas/procesados"
 cd Lotes/
 
 for file in $(ls);
@@ -98,7 +119,6 @@ do
 		# Grabar en el log el nombre del archivo aceptado
 	else
 		mv $archivo $rechazados					# Mueve a la carpeta de rechazados
-		# Grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo
 	fi
 done
 
