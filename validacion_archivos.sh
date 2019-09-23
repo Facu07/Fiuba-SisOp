@@ -58,25 +58,25 @@ function validar_cantidad_trx
 {
 CONTADOR=0
 
+
 for file in $(ls);
 do
-	while IFS=- read col1 col2 col3 col4		# Modifico Internal Field Separator por "-"
-	do
-		if [[ "$col1" != "CI" ]]; 
-		then
-			let CONTADOR=CONTADOR+1
-		else
-			if [[ "$CONTADOR" = "$col3" ]]
-			then
-				echo "archivo valido"			# Los deja donde estan pq están bien
-				CONTADOR=0
+while IFS=',' read TO OPDes trx FC anio FH col7 col8 col9 col10 TN CR RN col14 col15 col16 col17 MH
+	do				
+		if [[ "$TO" != "CI" ]]; 				# Modifico Internal Field Separator por ","
+		then									# To = Tipo Operacion		OPDes = Descripcion Oper
+			let CONTADOR=CONTADOR+1				# trx = cantidad tran 		TR = Trace Number
+		else									# FC = Fecha Cierre Lote	FH = Fecha y Hora
+			if [[ "$CONTADOR" = "$trx" ]]		# CR = Código de Respuesta ISO 8583
+			then 								# RN = Reference Number 	MH = Mensaje del Host	
+				nombreArchivo="$file"			# El resto se calcula con MH
 				procesar
-				# PROCESAR LAS TRANSACCIONES y a GRABAR EL CIERRE DE LOTE
+				CONTADOR=0
 			else
 				mv $file $rechazados			# Mueve a la carpeta de rechazados
 				# Grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo:
 				# cantidad de transacciones informadas en el cierre, cantidad en el lote
-				# "$col3 tiene cantidad informada en el cierre"
+				# "$trx tiene cantidad informada en el cierre"
 				# "$CONTADOR tiene cantidad posta en el lote"
 				CONTADOR=0
 			fi
@@ -89,7 +89,13 @@ return 0
 
 function procesar
 {
-mv $file $procesados
+archivoCierre="Cierre_de_$nombreArchivo"
+touch "$archivoCierre"
+echo -e $TO,$OPDes,$trx,$FC,$anio,$FH,$TN,$CR,$RN,$MH >> "$archivoCierre"
+
+mv $nombreArchivo $procesados						# Mueve a la carpeta de procesados
+mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
+
 return 0
 
 }
@@ -100,12 +106,19 @@ echo
 echo Inicio del cuerpo principal
 echo
 
+CICLO=0
+
 carpetas=$(pwd)
 aceptados="$carpetas/aceptados"
 rechazados="$carpetas/rechazados"
 procesados="$carpetas/procesados"
+cierreLotes="$carpetas/Cierre_de_Lotes"
 cd Lotes/
 
+
+#while $1 				para hacer un script demonio
+#do
+#set CICLO=CILO+1
 for file in $(ls);
 do
 	nombreArchivo="$file"
@@ -127,6 +140,8 @@ cd aceptados/
 
 validar_cantidad_trx
 
+#loggear el CICLO en el que voy
+#done del while "infinito"
 
 echo
 echo Fin Programa
