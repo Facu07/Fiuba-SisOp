@@ -219,95 +219,7 @@ if [ "$ALLDIREXISTS" == "NO" ]
 	fi
 }
 
-verificarTotalVar()
-{
-if [ "$VARCOUNT" != "10" ]
-	then
-		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... ERROR"
-		inicializacionAbortadaMsj
-		unsetVars
-		return 0
-	else
-		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... OK"
-	fi
-}
 
-
-verificarMaePermisos()
-{
-	fileExists="YES"
-	checkIfFileExists "$MAESTROSDIR/Sucursales.txt"
-	checkIfFileExists "$MAESTROSDIR/Operadores.txt"
-	if [ "$fileExists" == "NO" ]
-	then
-		echo "Verificando existencia de los archivos maestros en $MAESTROSDIR... ERROR"
-		inicializacionAbortadaMsj
-		unsetVars
-		return 0
-	else
-		echo "Verificando existencia de los archivos maestros en $MAESTROSDIR... OK"
-		echo "Seteando permisos de lectura a los archivos maestros... OK"
-		chmod +r "$MAESTROSDIR/Operadores.txt"
-		chmod +r "$MAESTROSDIR/Sucursales.txt"
-
-		fileReadable="YES"
-		checkIfFileIsReadable "$MAESTROSDIR/Operadores.txt"
-		checkIfFileIsReadable "$MAESTROSDIR/Sucursales.txt"
-		if [ "$fileReadable" == "NO" ]
-		then
-			echo "Verificando que los archivos maestros tengan permiso de lectura... ERROR"
-			inicializacionAbortadaMsj
-			unsetVars
-			return 0
-		else
-			echo "Verificando que los archivos maestros tengan permiso de lectura... OK"
-		fi
-	fi
-}
-
-
-verificarEjecPermisos()
-{
-	fileExists="YES"
-	checkIfFileExists "$BINDIR/mover"
-	checkIfFileExists "$BINDIR/glog"
-	checkIfFileExists "$BINDIR/start"
-	checkIfFileExists "$BINDIR/stop"
-	checkIfFileExists "$BINDIR/proceso.sh"
-	if [ "$fileExists" == "NO" ]
-	then
-		echo "Verificando existencia de los archivos ejecutables en $BINDIR... ERROR"
-		inicializacionAbortadaMsj
-		unsetVars
-		return 0
-	else
-		echo "Verificando existencia de los archivos ejecutables en $BINDIR... OK"
-	
-		echo "Seteando permisos de ejecución a los archivos ejecutables... OK"
-	
-		chmod +x "$BINDIR/mover"
-		chmod +x "$BINDIR/glog"
-		chmod +x "$BINDIR/start"
-		chmod +x "$BINDIR/stop"
-		chmod +x "$BINDIR/proceso.sh"
-
-		fileExecutable="YES"
-		checkIfFileIsExecutable "$BINDIR/mover"
-		checkIfFileIsExecutable "$BINDIR/glog"
-		checkIfFileIsExecutable "$BINDIR/start"
-		checkIfFileIsExecutable "$BINDIR/stop"
-		checkIfFileIsExecutable "$BINDIR/proceso.sh"
-		if [ "$fileExecutable" == "NO" ]
-		then
-			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
-			inicializacionAbortadaMsj
-			unsetVars
-			return 0
-		else
-			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... OK"
-		fi
-	fi
-}
 
 exportarVariables()
 {
@@ -349,9 +261,17 @@ ps cax | grep "proceso.sh" > /dev/null
 
 
 
-verificarSiEstaIniciado()
-{
 
+
+
+init()
+{
+	findDirGrupo
+
+	echo "Inicializando sistema..."	
+	./glog.sh "inicio" "Inicializando sistema..."
+	
+	#verificarSiEstaIniciado
 	#--------------------------------------------------------------------------------------------------------#	
 	#      VERIFICAR QUE EL SISTEMA NO ESTE INICIADO	       
 
@@ -364,12 +284,11 @@ verificarSiEstaIniciado()
 		echo "Verificando que el sistema no se encuentre ya inicializado... OK"
 	fi
 
-}
 
 
-verificarTpConfig()
-{
-#------------------Estado LIBERADO---------------------
+
+	#verificarTpConfig
+	#------------------Estado LIBERADO---------------------
 	#--------------------------------------------------------------------------------------------------------#	
 	#      VERIFICAR QUE EXISTA TPCONFIG.TXT Y TENGA PERMISO DE LECTURA       
 
@@ -397,28 +316,99 @@ verificarTpConfig()
 		fi
 	fi
 
-}
-
-init()
-{
-	findDirGrupo
-
-	echo "Inicializando sistema..."	
-	./glog.sh "inicio" "Inicializando sistema..."
-	
-	verificarSiEstaIniciado
-
-	verificarTpConfig
-
 	readTpconfig
 
-	verificarExistenTodasLasRutas
+	#verificarExistenTodasLasRutas
+	if [ "$ALLDIREXISTS" == "NO" ]
+	then
+		echo "Se han encontrado una o más rutas inexistentes para los directorios... ERROR"
+		inicializacionAbortadaMsj
+		unsetVars
+		return 0
+	fi
 
-	verificarTotalVar
+	#verificarTotalVar
+	if [ "$VARCOUNT" != "10" ]
+	then
+		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... ERROR"
+		inicializacionAbortadaMsj
+		unsetVars
+		return 0
+	else
+		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... OK"
+	fi
 
 	#verificarMaePermisos
+	fileExists="YES"
+	checkIfFileExists "$MAEDIR/CodigosISO8583.txt"
+	#checkIfFileExists "$MAEDIR/Operadores.txt"
+	if [ "$fileExists" == "NO" ]
+	then
+		echo "Verificando existencia de los archivos maestros en $MAEDIR... ERROR"
+		#inicializacionAbortadaMsj
+		unsetVars
+		return 0
+	else
+		echo "Verificando existencia de los archivos maestros en $MAESTROSDIR... OK"
+		echo "Seteando permisos de lectura a los archivos maestros... OK"
+		chmod +r "$MAEDIR/CodigosISO8583.txt"
+		#chmod +r "$MAESTROSDIR/Sucursales.txt"
+
+		fileReadable="YES"
+		checkIfFileIsReadable "$MAEDIR/CodigosISO8583.txt"
+		#checkIfFileIsReadable "$MAESTROSDIR/Sucursales.txt"
+		if [ "$fileReadable" == "NO" ]
+		then
+			echo "Verificando que los archivos maestros tengan permiso de lectura... ERROR"
+			#inicializacionAbortadaMsj
+			unsetVars
+			return 0
+		else
+			echo "Verificando que los archivos maestros tengan permiso de lectura... OK"
+		fi
+	fi
 
 	#verificarEjecPermisos
+	fileExists="YES"
+	checkIfFileExists "$BINDIR/mover"
+	checkIfFileExists "$BINDIR/glog"
+	checkIfFileExists "$BINDIR/start"
+	checkIfFileExists "$BINDIR/stop"
+	checkIfFileExists "$BINDIR/proceso.sh"
+	if [ "$fileExists" == "NO" ]
+	then
+		echo "Verificando existencia de los archivos ejecutables en $BINDIR... ERROR"
+		#inicializacionAbortadaMsj
+		unsetVars
+		echo "retornanado......"
+		return 0
+	else
+		echo "Verificando existencia de los archivos ejecutables en $BINDIR... OK"
+	
+		echo "Seteando permisos de ejecución a los archivos ejecutables... OK"
+	
+		chmod +x "$BINDIR/mover"
+		chmod +x "$BINDIR/glog"
+		chmod +x "$BINDIR/start"
+		chmod +x "$BINDIR/stop"
+		chmod +x "$BINDIR/proceso.sh"
+
+		fileExecutable="YES"
+		checkIfFileIsExecutable "$BINDIR/mover"
+		checkIfFileIsExecutable "$BINDIR/glog"
+		checkIfFileIsExecutable "$BINDIR/start"
+		checkIfFileIsExecutable "$BINDIR/stop"
+		checkIfFileIsExecutable "$BINDIR/proceso.sh"
+		if [ "$fileExecutable" == "NO" ]
+		then
+			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
+			inicializacionAbortadaMsj
+			unsetVars
+			return 0
+		else
+			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... OK"
+		fi
+	fi
 
 	exportarVariables
 
@@ -429,4 +419,5 @@ init()
 
 init
 
-	 
+
+
