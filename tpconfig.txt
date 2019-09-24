@@ -1,0 +1,10 @@
+GRUPODIR-/home/abonino/GRUPO04-maximiliano-2018-09-24_17:09:33
+CONFDIR-/home/abonino/GRUPO04/conf-maximiliano-2018-09-24_17:09:33
+LOGDIR-/home/abonino/GRUPO04/conf/log-maximiliano-2018-09-24_17:09:33
+BINDIR-/home/abonino/GRUPO04/bindir-maximiliano-2018-09-24_17:09:33
+MAEDIR-/home/abonino/GRUPO04/maestros-maximiliano-2018-09-24_17:09:33
+ACEPDIR-/home/abonino/GRUPO04/aceptados-maximiliano-2018-09-24_17:09:33
+RECHDIR-/home/abonino/GRUPO04/rechazados-maximiliano-2018-09-24_17:09:33
+PROCDIR-/home/abonino/GRUPO04/procesados-maximiliano-2018-09-24_17:09:33
+SALDIR-/home/abonino/GRUPO04/salida-maximiliano-2018-09-24_17:09:33
+NOVDIR-/home/abonino/GRUPO04/novedades-maximiliano-2018-09-24_17:09:33
