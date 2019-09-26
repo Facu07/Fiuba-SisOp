@@ -25,6 +25,9 @@
 #	LOGDIR: 	Directorio de archivos de LOG - GRUPO04/conf/log
 
 
+
+
+#---Listado de variables de ambiente
 GRUPODIR=""
 BINDIR=""
 MAEDIR=""
@@ -37,6 +40,7 @@ CONFDIR=""
 LOGDIR=""
 
 
+#
 #Me muevo al directorio de inicio. -  GRUPO04
 #Cargo los directorios fijos en sus variables de ambiente
 findDirGrupo()
@@ -49,6 +53,7 @@ findDirGrupo()
 	export LOGDIR
 	export CONFDIR
 	chmod +x glog.sh
+	#./glog.sh "inicio" "Cargando variable $VARIABLE y ruta $VALOR... OK"
 
 #echo $GRUPODIR
 #echo $LOGDIR
@@ -59,6 +64,7 @@ findDirGrupo()
 
 checkIfFileExists()
 {
+	./glog.sh "inicio" "INFO: Verificando que el archivo $FILE existe..."
 	fileExists="YES"
 	FILE=$1
 	if [ ! -f "$FILE" ]
@@ -69,6 +75,7 @@ checkIfFileExists()
 
 checkIfFileIsReadable()
 {
+	./glog.sh "inicio" "INFO: Verificando que el archivo $FILE tenga permisos de Lectura..."	
 	fileReadable="YES"
 	FILE=$1
 	if [ ! -r "$FILE" ]
@@ -80,6 +87,7 @@ checkIfFileIsReadable()
 
 checkIfFileIsExecutable()
 {
+	./glog.sh "inicio" "INFO: Verificando que el archivo $FILE tenga permisos de ejecucion..."
 	fileExecutable="YES"
 	FILE=$1
 	if [ ! -x "$FILE" ]
@@ -91,6 +99,7 @@ checkIfFileIsExecutable()
 
 unsetVars()
 {
+	./glog.sh "inicio" "INFO: unset variables de ambiente..."
 	unset TP_SISOP_INIT
 	unset GRUPODIR
 	unset CONFDIR
@@ -110,6 +119,7 @@ unsetVars()
 #	Leo las variables del archivo tpconfig.txt
 readTpconfig()
 {
+	./glog.sh "inicio" "INFO: leyendo archvio tpconfgi.txt....."
 	VARCOUNT=0	
 	ALLDIREXISTS="YES"
 	while read REGISTRO
@@ -210,7 +220,7 @@ readTpconfig()
 verificarExistenTodasLasRutas()
 {
 
-if [ "$ALLDIREXISTS" == "NO" ]
+	if [ "$ALLDIREXISTS" == "NO" ]
 	then
 		echo "Se han encontrado una o más rutas inexistentes para los directorios... ERROR"
 		inicializacionAbortadaMsj
@@ -242,7 +252,7 @@ exportarVariables()
 
 activarProceso()
 {
-ps cax | grep "proceso.sh" > /dev/null
+	ps cax | grep "proceso.sh" > /dev/null
 
 	if [ $? -eq 0 ]; 
 	then
@@ -257,31 +267,29 @@ ps cax | grep "proceso.sh" > /dev/null
 }
 
 
-
-
-
-
-
-
-
 init()
 {
 	findDirGrupo
 
-	echo "Inicializando sistema..."	
-	./glog.sh "inicio" "Inicializando sistema..."
+	echo "Corriendo Scripts de Inicializacion..."	
+	./glog.sh "inicio" "INFO: Corriendo Scripts de Inicializacion..."
 	
 	#verificarSiEstaIniciado
 	#--------------------------------------------------------------------------------------------------------#	
 	#      VERIFICAR QUE EL SISTEMA NO ESTE INICIADO	       
 
+	echo "Verificando que el sistema no se encuentre inicializado..."	
+	./glog.sh "inicio" "INFO: Verificando que el sistema no se encuentre inicializado.."
+
 	if [ "$TP_SISOP_INIT" == "YES" ] 
 	then
-		echo "Verificando que el sistema no se encuentre ya inicializado... ERROR"
+		echo "El sistema ya se encuentra  inicializado."
+		./glog.sh "inicio" "WARNING: El sistema ya se encuentra inicializado."
 		inicializacionAbortadaMsj
 		return 0
 	else
-		echo "Verificando que el sistema no se encuentre ya inicializado... OK"
+		echo "El sistema no se encuentra inicializado..."
+		./glog.sh "inicio" "INFO: El sistema no se encuentra inicializado."
 	fi
 
 
@@ -419,5 +427,4 @@ init()
 
 init
 
-
-
+	 
