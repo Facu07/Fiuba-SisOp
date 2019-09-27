@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#cat <<-EOF
-
 function validar_Existe_NoVacio_Regular
 {
 
@@ -40,6 +38,27 @@ return -1
 
 }
 
+function validar_Repetido
+{
+
+cd ..
+cd procesados/
+for file in $(ls);
+	do
+		if [[ $nombreArchivo == $file ]];
+		then
+			# Grabar en log que se rechaza el $nombreArchivo por que esta duplicado
+			cd ..
+			cd Lotes/
+			return -1 
+		fi
+	done
+cd ..
+cd Lotes/
+return 0
+
+}
+
 function validar_Archivo
 {
 
@@ -47,7 +66,10 @@ if validar_Existe_NoVacio_Regular;
 then
 	if validar_Nombre_Archivo;
 	then
-		return 0
+		if validar_Repetido;
+		then
+			return 0
+		fi
 	fi
 fi
 return -1
@@ -134,29 +156,29 @@ cierreLotes="$carpetas/Cierre_de_Lotes"
 cd Lotes/
 
 
-#while $1 				para hacer un script demonio
+#while $1 				#para hacer un script demonio
 #do
-#set CICLO=CILO+1
-for file in $(ls);
-do
-	nombreArchivo="$file"
-	archivo=$file
-	lote="${nombreArchivo%_*}"
-	nn="${nombreArchivo##*_}"
-	nn="${nn%*.csv}"
-	if validar_Archivo; 
-	then	
-		mv $archivo $aceptados					# Mueve a la carpeta de aceptados
+	set CICLO=CILO+1
+	for file in $(ls);
+	do
+		nombreArchivo="$file"
+		archivo=$file
+		lote="${nombreArchivo%_*}"
+		nn="${nombreArchivo##*_}"
+		nn="${nn%*.csv}"
+		if validar_Archivo; 
+		then	
+			mv $archivo $aceptados					# Mueve a la carpeta de aceptados
 		# Grabar en el log el nombre del archivo aceptado
-	else
-		mv $archivo $rechazados					# Mueve a la carpeta de rechazados
-	fi
-done
+		else
+			mv $archivo $rechazados					# Mueve a la carpeta de rechazados
+		fi
+	done
 
-cd ..
-cd aceptados/
+	cd ..
+	cd aceptados/
 
-validar_cantidad_trx
+	validar_cantidad_trx
 
 #sleep 10
 
