@@ -218,15 +218,6 @@ DIRNOK-$GRUPO/$DIRNOK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRPROC-$GRUPO/$DIRPROC-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIROUT-$GRUPO/$DIROUT-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRLOG-$DIRLOG-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > $DIRCONF/tpconfig.txt
-
-	unset DIRBIN
-	unset DIRMAE
-	unset DIRTRANS
-	unset DIROK
-	unset DIRNOK
-	unset DIRPROC
-	unset DIROUT
-
 }
 
 function creardirectorios() {
@@ -262,10 +253,10 @@ function creardirectorios() {
 
 
 	loguear "Grabando Archivos Maestros: $(obtenerVariable DIRMAE)" "INFO"
-	mv Paquete/Lotes "$(obtenerVariable DIRMAE)"
+	cp -R Paquete/Lotes "$(obtenerVariable DIRMAE)"
 
 	loguear "Grabando Archivos Ejecutables: $(obtenerVariable DIRBIN)" "INFO"
-    mv Paquete/Binarios "$(obtenerVariable DIRBIN)"
+	cp -R Paquete/Binarios "$(obtenerVariable DIRBIN)"
 
 }
 
@@ -303,7 +294,6 @@ verificarPermisoLectura(){
 	echo "Seteando permiso de lectura a $name"
 	chmod +r-xw "$1"
 	if ! [[ $? -eq 0 ]]; then
-		loguearInit "No se puede setear permiso de lectura a $name" "ERR"
 		echo "No se pudo setear permiso de lectura a $name"
 		return 1
 	fi
