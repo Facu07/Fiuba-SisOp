@@ -257,11 +257,11 @@ activarProceso()
 	if [ $? -eq 0 ]; 
 	then
 		echo "============ [ERROR] proceso.sh ya se encuentra en ejecución ============"
-		"$BINDIR"/glog "init" "No se pudo invocar el comando debido a que proceso.sh ya se encuentra en ejecución" "ERROR"		
+		"$BINDIR"/glog.sh "iniicio" "No se pudo invocar el comando debido a que proceso.sh ya se encuentra en ejecución" "ERROR"		
 	else
-		"$BINDIR"/proceso.sh &
+		"$BINDIR"/proc.sh &
 
-		PID=$(ps | grep "proceso.sh" | cut -d' ' -f1)
+		PID=$(ps | grep "proc.sh" | cut -d' ' -f1)
 		echo "============ Se inicia proceso.sh ID:$PID============"
 	fi
 }
@@ -395,18 +395,22 @@ init()
 	
 		echo "Seteando permisos de ejecución a los archivos ejecutables... OK"
 	
-		chmod +x "$BINDIR/mover"
-		chmod +x "$BINDIR/glog"
-		chmod +x "$BINDIR/start"
-		chmod +x "$BINDIR/stop"
-		chmod +x "$BINDIR/proceso.sh"
+		chmod +x "$BINDIR/loger.sh"
+		chmod +x "$BINDIR/glog.sh"
+		chmod +x "$BINDIR/inicio.sh"
+		chmod +x "$BINDIR/proc.sh"
+		chmod +x "$BINDIR/start.sh"
+		chmod +x "$BINDIR/stop.sh"
+		chmod +x "$BINDIR/validacion_archivos.sh"
 
 		fileExecutable="YES"
-		checkIfFileIsExecutable "$BINDIR/mover"
-		checkIfFileIsExecutable "$BINDIR/glog"
-		checkIfFileIsExecutable "$BINDIR/start"
-		checkIfFileIsExecutable "$BINDIR/stop"
-		checkIfFileIsExecutable "$BINDIR/proceso.sh"
+		checkIfFileIsExecutable "$BINDIR/loger.sh"
+		checkIfFileIsExecutable "$BINDIR/glog.sh"
+		checkIfFileIsExecutable "$BINDIR/inicio.sh"
+		checkIfFileIsExecutable "$BINDIR/proc.sh"
+		checkIfFileIsExecutable "$BINDIR/start.sh"
+		checkIfFileIsExecutable "$BINDIR/stop.sh"
+		checkIfFileIsExecutable "$BINDIR/validacion_archivos.sh"
 		if [ "$fileExecutable" == "NO" ]
 		then
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
@@ -420,7 +424,7 @@ init()
 
 	exportarVariables
 
-	#activarProceso
+	activarProceso
 }
 
 
