@@ -1,16 +1,16 @@
 #!/bin/bash
 
 GRUPO=${PWD}/grupo04
-DIRCONF=conf
-DIRLOG=conf/log
-DIRLOGBIN=$GRUPO/binarios
+DIRCONF=grupo04/conf
+DIRLOG=grupo04/conf/log
+DIRLOGBIN=Paquete/Binarios
 
 
 
 main() {
 	export GRUPO
 
-	ISINSTALLED="$(obtenerVariable DIRBIN)"
+	ISINSTALLED="$(ls -A grupo04)"
 	if [ -d "$ISINSTALLED" ]; then
 		necesitaRepararse="$(necesitaRepararse)"
 		if [[ $necesitaRepararse = "si" ]]; then
@@ -29,8 +29,10 @@ main() {
 
 instalarPrograma() {
 	setearDirectoriosPorDefecto
-	mkdir -m 777 $DIRCONF $DIRLOG
-	verificarPermisosLogueo $GRUPO/$DIRLOG/Install.log
+	mkdir -m 777 grupo04
+	mkdir -m 777 $DIRCONF
+	mkdir -m 777 $DIRLOG
+	verificarPermisosLogueo $DIRLOG/Install.log
 	loguear "Inicio del proceso. Usuario: `whoami` Fecha y hora:  `date`" "INFO"
 	loguear "Directorio de logs creado." "INFO"
 	loguear "Directorio de config creado." "INFO"
@@ -44,13 +46,13 @@ instalarPrograma() {
 	grabarConfig
 	creardirectorios
 
-	setearDireccionLoggerDefinitiva
 	DIRBIN="$(obtenerVariable DIRBIN)"
 	verificarPermisoEjecucion "$DIRBIN/inicio.sh" || return 1
 	loguear "Actualizando la configuracion del sistema" "INFO"
 	loguear "Instalacion CONCLUIDA" "INFO"
 	loguear "FIN del proceso. Usuario: `whoami` Fecha y hora:  `date`" "INFO"
 	echo "Instalación finalizada"
+	setearDireccionLoggerDefinitiva
 }
 
 setearDirectoriosPorDefecto() {
@@ -89,7 +91,7 @@ function loguear(){
 }
 
 loguearDirectoriosPorDefecto(){
-	loguear "Directorio por defecto de Configuración: $GRUPO/$DIRCONF " "INFO" #0
+	loguear "Directorio por defecto de Configuración: $DIRCONF " "INFO" #0
 	loguear "Directorio por defecto de Ejecutables: $DIRBIN " "INFO"#a
 	loguear "Directorio por defecto de Maestros y Tablas: $DIRMAE " "INFO"#b
 	loguear "Directorio por defecto de Recepcion de Transacciones: $DIRTRANS " "INFO"#c
@@ -104,37 +106,37 @@ function elegirDirectorios() {
 	echo "Inicio del proceso de eleccion de directorios."
 	loguear "Inicio del proceso de eleccion de directorios." "INFO"
 	#a
-	echo "Defina el directorio de ejecutables (Grupo04/$DIRBIN): "
+	echo "Defina el directorio de ejecutables ($DIRBIN): "
 	setearDirectorio DIRBIN
 	directorios+=("$DIRBIN")
 	loguear "El usuario eligio el nombre $DIRBIN para el directorio de ejecutables" "INFO"
 	#b
-	echo "Defina el directorio de Archivos Maestros (Grupo04/$DIRMAE): "
+	echo "Defina el directorio de Archivos Maestros ($DIRMAE): "
 	setearDirectorio DIRMAE
 	directorios+=("$DIRMAE")
 	loguear "El usuario eligio el nombre $DIRMAE para el directorio de maestros y tablas" "INFO"
 	#c
-	echo "Defina el directorio de recepción de transacciones (Grupo04/$DIRTRANS): "
+	echo "Defina el directorio de recepción de transacciones ($DIRTRANS): "
 	setearDirectorio DIRTRANS
 	directorios+=("$DIRTRANS")
 	loguear "El usuario eligio el nombre $DIRTRANS para el directorio de recepcion de transacciones" "INFO"
 	#d
-	echo "Defina el directorio de Archivos Aceptados (Grupo04/$DIROK): "
+	echo "Defina el directorio de Archivos Aceptados ($DIROK): "
 	setearDirectorio DIROK
 	directorios+=("$DIROK")
 	loguear "El usuario eligio el nombre $DIROK para el directorio de archivos aceptados, para luego ser procesados" "INFO"
 	#e
-	echo "Defina el directorio de rechazados (Grupo04/$DIRNOK): "
+	echo "Defina el directorio de rechazados ($DIRNOK): "
 	setearDirectorio DIRNOK
 	directorios+=("$DIRNOK")
 	loguear "El usuario eligio el nombre $DIRNOK para el directorio de rechazados" "INFO"
 	#f
-	echo "Defina el directorio de Archivos Procesados (Grupo04/$DIRPROC): "
+	echo "Defina el directorio de Archivos Procesados ($DIRPROC): "
 	setearDirectorio DIRPROC
 	directorios+=("$DIRPROC")
 	loguear "El usuario eligio el nombre $DIRPROC para el directorio de archivos ya procesados" "INFO"
 	#g
-	echo "Defina el directorio de Archivos de Salida (Grupo04/$DIROUT): "
+	echo "Defina el directorio de Archivos de Salida ($DIROUT): "
 	setearDirectorio DIROUT
 	directorios+=("$DIROUT")
 	loguear "El usuario eligio el nombre $DIROUT para el directorio de archivos de salida" "INFO"
@@ -206,9 +208,8 @@ function confirmarInstalacion() {
 }
 
 function grabarConfig() {
-	cd $GRUPO/$DIRCONF
-	echo "GRUPO-$GRUPO-$USER-$(date '+%Y-%m-%d %H:%M:%S')
-DIRCONF-$GRUPO/$DIRCONF-$USER-$(date '+%Y-%m-%d %H:%M:%S')
+	echo "GRUPO-$USER-$(date '+%Y-%m-%d %H:%M:%S')
+DIRCONF-$DIRCONF-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRBIN-$GRUPO/$DIRBIN-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRMAE-$GRUPO/$DIRMAE-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRTRANS-$GRUPO/$DIRTRANS-$USER-$(date '+%Y-%m-%d %H:%M:%S')
@@ -216,8 +217,7 @@ DIROK-$GRUPO/$DIROK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRNOK-$GRUPO/$DIRNOK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRPROC-$GRUPO/$DIRPROC-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIROUT-$GRUPO/$DIROUT-$USER-$(date '+%Y-%m-%d %H:%M:%S')
-DIRLOG-$GRUPO/$DIRLOG-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > tpconfig.txt
-	cd ../
+DIRLOG-$DIRLOG-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > $DIRCONF/tpconfig.txt
 
 	unset DIRBIN
 	unset DIRMAE
@@ -286,11 +286,11 @@ function repararPrograma() {
 
 eliminarProgramaInstalado () {
 	rm -d -rf $(ls | grep -v conf | grep -v bin | grep -v mae | grep -v Install.sh)
-	rm $GRUPO/$DIRCONF/tpconfig.txt
+	rm $DIRCONF/tpconfig.txt
 }
 
 obtenerVariable(){
-	echo $(grep $1 $GRUPO/$DIRCONF/tpconfig.txt | cut -d '-' -f 2)
+	echo $(grep $1 $DIRCONF/tpconfig.txt | cut -d '-' -f 2)
 }
 
 setearDireccionLoggerDefinitiva() {
