@@ -133,6 +133,8 @@ echo -e $TO,$OPDes,$trx,$FC,$anio,$FH,$TN,$CR,$RN,$MH,$nBatch,$cantCompras,$mont
 mv $nombreArchivo $procesados						# Mueve a la carpeta de procesados
 mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
 
+# Grabar en el log “Batch Nº xxx ($nBatch) grabado en cierre de lote"
+
 return 0
 
 }
