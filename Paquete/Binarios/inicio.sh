@@ -1,8 +1,8 @@
 #/bin/bash
 
 
-#	INICIALIZAR AMBIENTE DESDE $GRUPODIR/bin/init.sh  
-#	EL ARCHIVO DE CONFIGURACION $GRUPODIR/conf/tpconfig.txt
+#	INICIALIZAR AMBIENTE DESDE $GRUPO/bin/init.sh  
+#	EL ARCHIVO DE CONFIGURACION $GRUPO/conf/tpconfig.txt
 #--------------------------------------------------------------------------------
 #	NOTAS:
 #	Cuando este Script incia reliaza al inicializacion correctamente
@@ -13,31 +13,31 @@
 #	COMENTARIOS:
 #	SCRIPTPATH -> Es el directorio desde donde se corre el Script
 #
-#	GRUPODIR: 	Directorio principal 
-#	BINDIR:		Directorio de Archivos binarios
-#	MAEDIR:		Directorio de archvios Maestros
+#	GRUPO: 		Directorio principal 
+#	DIRBIN:		Directorio de Archivos binarios
+#	DIRMAE:		Directorio de archvios Maestros
 #	NOVDIR:		Directorio de Novedades
-#	RECHDIR:	Directoiro de Archivos rechazados
-#	PROCDIR:	Directorio de archivos a procesar y aceptados
-#	SALDIR:		Directorio de Archvos de salida
+#	DIRNOK:		Directoiro de Archivos rechazados
+#	DIRPROC:	Directorio de archivos a procesar y aceptados
+#	DIROUT:		Directorio de Archvos de salida
 #	ARRDIR:		Directorio de Archivos de Arribo
-#	CONFDIR: 	Directorio de configuracion - GRUPO04/conf
-#	LOGDIR: 	Directorio de archivos de LOG - GRUPO04/conf/log
+#	DIRCONF: 	Directorio de configuracion - GRUPO04/conf
+#	DIRLOG: 	Directorio de archivos de LOG - GRUPO04/conf/log
 
 
 
 
 #---Listado de variables de ambiente
-GRUPODIR=""
-BINDIR=""
-MAEDIR=""
+GRUPO=""
+DIRBIN=""
+DIRMAE=""
 NOVDIR=""
-RECHDIR=""
-PROCDIR=""
-SALDIR=""
+DIRNOK=""
+DIRPROC=""
+DIROUT=""
 ACEPDIR=""
-CONFDIR=""
-LOGDIR=""
+DIRCONF=""
+DIRLOG=""
 
 
 #
@@ -46,18 +46,18 @@ LOGDIR=""
 findDirGrupo()
 {
 #--------Estado LIBERADO----------
-	GRUPODIR="$( cd "$(dirname "$0")" ; cd .. ; pwd -P )"
-	LOGDIR="$GRUPODIR/conf/log"
-	CONFDIR="$GRUPODIR/conf"
-	export GRUPODIR
-	export LOGDIR
-	export CONFDIR
+	GRUPO="$( cd "$(dirname "$0")" ; cd .. ; pwd -P )"
+	DIRLOG="$GRUPO/conf/log"
+	DIRCONF="$GRUPO/conf"
+	export GRUPO
+	export DIRLOG
+	export DIRCONF
 	chmod +x glog.sh
 	#./glog.sh "inicio" "Cargando variable $VARIABLE y ruta $VALOR... OK"
 
-#echo $GRUPODIR
-#echo $LOGDIR
-#echo $CONFDIR
+#echo $GRUPO
+#echo $DIRLOG
+#echo $DIRCONF
 
 }
 
@@ -101,16 +101,16 @@ unsetVars()
 {
 	./glog.sh "inicio" "unset variables de ambiente..."
 	unset TP_SISOP_INIT
-	unset GRUPODIR
-	unset CONFDIR
-	unset LOGDIR
-	unset BINDIR
-	unset MAEDIR
+	unset GRUPO
+	unset DIRCONF
+	unset DIRLOG
+	unset DIRBIN
+	unset DIRMAE
 	unset NOVDIR
 	unset ACEPDIR
-	unset RECHDIR
-	unset PROCDIR
-	unset SALDIR
+	unset DIRNOK
+	unset DIRPROC
+	unset DIROUT
 }
 
 
@@ -142,40 +142,40 @@ readTpconfig()
 			ALLDIREXISTS="NO"
  		else
 			case $VARIABLE in
-				"GRUPODIR")
-				GRUPODIR="$VALOR"
+				"GRUPO")
+				GRUPO="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;
-				"CONFDIR")
-				CONFDIR="$VALOR"
+				"DIRCONF")
+				DIRCONF="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;
-				"LOGDIR")
-				LOGDIR="$VALOR"
+				"DIRLOG")
+				DIRLOG="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;	
-				"BINDIR")
-				BINDIR="$VALOR"
+				"DIRBIN")
+				DIRBIN="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;	
-				"MAEDIR")
-				MAEDIR="$VALOR"
+				"DIRMAE")
+				DIRMAE="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;	
-				"PROCDIR")
-				PROCDIR="$VALOR"
+				"DIRPROC")
+				DIRPROC="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;	
-				"RECHDIR")
-				RECHDIR="$VALOR"
+				"DIRNOK")
+				DIRNOK="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;	
 				"NOVDIR")
-				PROCDIR="$VALOR"
+				DIRPROC="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;	
-				"SALDIR")
-				SALDIR="$VALOR"
+				"DIROUT")
+				DIROUT="$VALOR"
 				VARCOUNT=$((VARCOUNT+1))
 				;;
 				"ACEPDIR")
@@ -199,18 +199,18 @@ readTpconfig()
 			fi
 		fi	
 
-	done <"$GRUPODIR/conf/tpconfig.txt"
+	done <"$GRUPO/conf/tpconfig.txt"
 
-#echo $GRUPODIR
-#echo $BINDIR
-#echo $MAEDIR
+#echo $GRUPO
+#echo $DIRBIN
+#echo $DIRMAE
 #echo $NOVDIR
-#echo $RECHDIR
-#echo $PROCDIR
-#echo $SALDIR
+#echo $DIRNOK
+#echo $DIRPROC
+#echo $DIROUT
 #echo $ACEPDIR
-#echo $CONFDIR
-#echo $LOGDIR
+#echo $DIRCONF
+#echo $DIRLOG
 #echo "Variable con nombre correctos: " $NOMBRECORRECTO
 #echo "Todos los directorios existen: " $ALLDIREXISTS
 }
@@ -236,10 +236,10 @@ exportarVariables()
 {
 	TP_SISOP_INIT=YES
 	export TP_SISOP_INIT
-	export GRUPODIR
-	export CONFDIR
-	export LOGDIR
-	export BINDIR
+	export GRUPO
+	export DIRCONF
+	export DIRLOG
+	export DIRBIN
 	export MAESTROSDIR
 	export ARRIBOSDIR
 	export ACEPTADOSDIR
@@ -259,13 +259,13 @@ activarProceso()
 	if [ $? -eq 0 ]; 
 	then
 		echo "============ [ERROR] proceso.sh ya se encuentra en ejecución ============"
-		"$BINDIR"/glog.sh "iniicio" "No se pudo invocar el comando debido a que proceso.sh ya se encuentra en ejecución" "ERROR"		
+		"$DIRBIN"/glog.sh "iniicio" "No se pudo invocar el comando debido a que proceso.sh ya se encuentra en ejecución" "ERROR"		
 	else
-		"$BINDIR"/proc.sh &
+		"$DIRBIN"/proc.sh &
 
 		PID=$(ps | grep "proc.sh" | cut -d' ' -f1)
 		echo "============ Se inicia proceso.sh ID:$PID============"
-		"$BINDIR"/glog.sh "iniicio" "INFO: ============ Se inicia proc.sh ID:$PID============"
+		"$DIRBIN"/glog.sh "iniicio" "INFO: ============ Se inicia proc.sh ID:$PID============"
 	fi
 }
 
@@ -303,7 +303,7 @@ init()
 	#--------------------------------------------------------------------------------------------------------#	
 	#      VERIFICAR QUE EXISTA TPCONFIG.TXT Y TENGA PERMISO DE LECTURA       
 
-	checkIfFileExists "$CONFDIR/tpconfig.txt"
+	checkIfFileExists "$DIRCONF/tpconfig.txt"
 		
 	if [ "$fileExists" == "NO" ]
 	then
@@ -317,9 +317,9 @@ init()
 	
 		echo "Setando permiso de lectura al archivo de configuración... OK"
 		./glog.sh "inicio" "Setando permiso de lectura al archivo de configuración... OK"
-		chmod +r "$CONFDIR/tpconfig.txt"
+		chmod +r "$DIRCONF/tpconfig.txt"
 
-		checkIfFileIsReadable "$CONFDIR/tpconfig.txt"
+		checkIfFileIsReadable "$DIRCONF/tpconfig.txt"
 		if [ "$fileReadable" == "NO" ]
 		then
 			echo "Verificando que el archivo de configuración tenga permisos de lectura... ERROR"
@@ -359,12 +359,12 @@ init()
 
 	#verificarMaePermisos
 	fileExists="YES"
-	checkIfFileExists "$MAEDIR/CodigosISO8583.txt"
-	#checkIfFileExists "$MAEDIR/Operadores.txt"
+	checkIfFileExists "$DIRMAE/CodigosISO8583.txt"
+	#checkIfFileExists "$DIRMAE/Operadores.txt"
 	if [ "$fileExists" == "NO" ]
 	then
-		echo "Verificando existencia de los archivos maestros en $MAEDIR... ERROR"
-		./glog.sh "inicio" "Verificando existencia de los archivos maestros en $MAEDIR." "ERROR"
+		echo "Verificando existencia de los archivos maestros en $DIRMAE... ERROR"
+		./glog.sh "inicio" "Verificando existencia de los archivos maestros en $DIRMAE." "ERROR"
 		#inicializacionAbortadaMsj
 		unsetVars
 		return 0
@@ -373,11 +373,11 @@ init()
 		./glog.sh "inicio" "INFO: Verificando existencia de los archivos maestros en $MAESTROSDIR... OK"
 		echo "Seteando permisos de lectura a los archivos maestros... OK"
 		./glog.sh "inicio" "Seteando permisos de lectura a los archivos maestros... OK"
-		chmod +r "$MAEDIR/CodigosISO8583.txt"
+		chmod +r "$DIRMAE/CodigosISO8583.txt"
 		#chmod +r "$MAESTROSDIR/Sucursales.txt"
 
 		fileReadable="YES"
-		checkIfFileIsReadable "$MAEDIR/CodigosISO8583.txt"
+		checkIfFileIsReadable "$DIRMAE/CodigosISO8583.txt"
 		#checkIfFileIsReadable "$MAESTROSDIR/Sucursales.txt"
 		if [ "$fileReadable" == "NO" ]
 		then
@@ -394,47 +394,47 @@ init()
 
 	#verificarEjecPermisos
 	fileExists="YES"
-	checkIfFileExists "$BINDIR/mover"
-	checkIfFileExists "$BINDIR/glog"
-	checkIfFileExists "$BINDIR/start"
-	checkIfFileExists "$BINDIR/stop"
-	checkIfFileExists "$BINDIR/proceso.sh"
+	checkIfFileExists "$DIRBIN/mover"
+	checkIfFileExists "$DIRBIN/glog"
+	checkIfFileExists "$DIRBIN/start"
+	checkIfFileExists "$DIRBIN/stop"
+	checkIfFileExists "$DIRBIN/proceso.sh"
 	if [ "$fileExists" == "NO" ]
 	then
-		echo "Verificando existencia de los archivos ejecutables en $BINDIR... ERROR"
-		./glog.sh "inicio" "Verificando existencia de los archivos ejecutables en $BINDIR." "ERROR"
+		echo "Verificando existencia de los archivos ejecutables en $DIRBIN... ERROR"
+		./glog.sh "inicio" "Verificando existencia de los archivos ejecutables en $DIRBIN." "ERROR"
 		#inicializacionAbortadaMsj
 		unsetVars
 		echo "retornanado......"
 		return 0
 	else
-		echo "Verificando existencia de los archivos ejecutables en $BINDIR... OK"
-		./glog.sh "inicio" "Verificando existencia de los archivos ejecutables en $BINDIR... OK"
+		echo "Verificando existencia de los archivos ejecutables en $DIRBIN... OK"
+		./glog.sh "inicio" "Verificando existencia de los archivos ejecutables en $DIRBIN... OK"
 	
 		echo "Seteando permisos de ejecución a los archivos ejecutables... OK"
 		./glog.sh "inicio" "Seteando permisos de ejecución a los archivos ejecutables... OK"
 	
-		chmod +x "$BINDIR/loger.sh"
-		chmod +x "$BINDIR/glog.sh"
-		chmod +x "$BINDIR/inicio.sh"
-		chmod +x "$BINDIR/proc.sh"
-		chmod +x "$BINDIR/start.sh"
-		chmod +x "$BINDIR/stop.sh"
-		chmod +x "$BINDIR/validacion_archivos.sh"
+		chmod +x "$DIRBIN/loger.sh"
+		chmod +x "$DIRBIN/glog.sh"
+		chmod +x "$DIRBIN/inicio.sh"
+		chmod +x "$DIRBIN/proc.sh"
+		chmod +x "$DIRBIN/start.sh"
+		chmod +x "$DIRBIN/stop.sh"
+		chmod +x "$DIRBIN/validacion_archivos.sh"
 
 		fileExecutable="YES"
-		checkIfFileIsExecutable "$BINDIR/loger.sh"
-		checkIfFileIsExecutable "$BINDIR/glog.sh"
-		checkIfFileIsExecutable "$BINDIR/inicio.sh"
-		checkIfFileIsExecutable "$BINDIR/proc.sh"
-		checkIfFileIsExecutable "$BINDIR/start.sh"
-		checkIfFileIsExecutable "$BINDIR/stop.sh"
-		checkIfFileIsExecutable "$BINDIR/validacion_archivos.sh"
+		checkIfFileIsExecutable "$DIRBIN/loger.sh"
+		checkIfFileIsExecutable "$DIRBIN/glog.sh"
+		checkIfFileIsExecutable "$DIRBIN/inicio.sh"
+		checkIfFileIsExecutable "$DIRBIN/proc.sh"
+		checkIfFileIsExecutable "$DIRBIN/start.sh"
+		checkIfFileIsExecutable "$DIRBIN/stop.sh"
+		checkIfFileIsExecutable "$DIRBIN/validacion_archivos.sh"
 		if [ "$fileExecutable" == "NO" ]
 		then
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
 			./glog.sh "inicio" "Verificando que los archivos ejecutables tengan permiso de ejecución." "ERROR"
-			#inicializacionAbortadaMsj
+			inicializacionAbortadaMsj
 			unsetVars
 			return 0
 		else
