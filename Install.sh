@@ -209,7 +209,7 @@ function confirmarInstalacion() {
 
 function grabarConfig() {
 	echo "GRUPO-$GRUPO-$USER-$(date '+%Y-%m-%d %H:%M:%S')
-DIRCONF-$GRUPO/$DIRCONF-$USER-$(date '+%Y-%m-%d %H:%M:%S')
+DIRCONF-$GRUPO/conf/-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRBIN-$GRUPO/$DIRBIN-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRMAE-$GRUPO/$DIRMAE-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRTRANS-$GRUPO/$DIRTRANS-$USER-$(date '+%Y-%m-%d %H:%M:%S')
@@ -217,7 +217,7 @@ DIROK-$GRUPO/$DIROK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRNOK-$GRUPO/$DIRNOK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRPROC-$GRUPO/$DIRPROC-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIROUT-$GRUPO/$DIROUT-$USER-$(date '+%Y-%m-%d %H:%M:%S')
-DIRLOG-$GRUPO/$DIRLOG-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > $DIRCONF/tpconfig.txt
+DIRLOG-$GRUPO/conf/log/-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > $DIRCONF/tpconfig.txt
 }
 
 function creardirectorios() {
