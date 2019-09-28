@@ -41,15 +41,15 @@ then
 			return 0									#Existe y no esta vacío && Exite y puede leerse 
 		fi
 		# Grabar en el log el nombre del archivo rechazado. Motivo: No es un archivo normal
-		$BINDIR/glog.sh "proc" "ERROR: $nombreArchivo rechazado. Motivo: No es un archivo normal"
+		$BINDIR/glog.sh "proc" "$nombreArchivo rechazado. Motivo: No es un archivo normal" "ERROR"
 		return -1
 	fi
 	# Grabar en el log el nombre del archivo rechazado. Motivo: No es legible
-	$BINDIR/glog.sh "proc" "ERROR: $nombreArchivo rechazado. Motivo: No es legible"
+	$BINDIR/glog.sh "proc" "$nombreArchivo rechazado. Motivo: No es legible" "ERROR"
 	return -1
 fi
 # Grabar en el log el nombre del archivo rechazado. Motivo: Archivo vacio
-$BINDIR/glog.sh "proc" "ERROR: $nombreArchivo rechazado. Motivo: Archivo vacio"
+$BINDIR/glog.sh "proc" "$nombreArchivo rechazado. Motivo: Archivo vacio" "ERROR"
 return -1
 
 }
@@ -80,7 +80,7 @@ for file in $(ls);
 		if [[ $nombreArchivo == $file ]];
 		then
 			# Grabar en log que se rechaza el $nombreArchivo por que esta duplicado
-			$BINDIR/glog.sh "proc" "ERROR: Se rechaza el $nombreArchivo por estar duplicado"
+			$BINDIR/glog.sh "proc" "Se rechaza el $nombreArchivo por estar duplicado" "ERROR"
 			cd ..
 			cd $novedades/
 			return -1 
@@ -133,7 +133,7 @@ while IFS=',' read TO OPDes trx FC anio FH col7 col8 col9 col10 TN CR RN col14 c
 				# cantidad de transacciones informadas en el cierre, cantidad en el lote
 				# "$trx tiene cantidad informada en el cierre"
 				# "$CONTADOR tiene cantidad posta en el lote"
-				./glog.sh "proc" "$nombreArchivo. Cantidad de transacciones informadas en el cierre: $trx. Cantidad en el lote: $CONTADOR"
+				$BINDIR/glog.sh "proc" "$nombreArchivo. Cantidad de transacciones informadas en el cierre: $trx. Cantidad en el lote: $CONTADOR"
 				CONTADOR=0
 			fi
 		fi
@@ -168,7 +168,7 @@ mv $nombreArchivo $procesados						# Mueve a la carpeta de procesados
 mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
 
 # Grabar en el log “Batch Nº xxx ($nBatch) grabado en cierre de lote"
-$BINDIR/glog.sh "proc" "INFO: Batch Nº: $nBatch grabado en cierre de lote"
+$BINDIR/glog.sh "proc" "Batch Nº: $nBatch grabado en cierre de lote"
 
 return 0
 
@@ -196,7 +196,7 @@ trap finalizar_proceso SIGINT SIGTERM
 
 while [ $PROCESO_ACTIVO = true ]
 do
-	$BINDIR/glog.sh "proc" "INFO: Procesando... "
+	$BINDIR/glog.sh "proc" "Procesando... "
 
 	set CICLO=CILO+1
 	for file in $(ls);
@@ -210,7 +210,7 @@ do
 		then	
 			mv $archivo $aceptados					# Mueve a la carpeta de aceptados
 		# Grabar en el log el nombre del archivo aceptado
-		$BINDIR/glog.sh "proc" "INFO: Archivo $archivo aceptado"
+		$BINDIR/glog.sh "proc" "Archivo $archivo aceptado"
 		else
 			mv $archivo $rechazados					# Mueve a la carpeta de rechazados
 		fi
@@ -224,11 +224,11 @@ do
 sleep 10
 
 #loggear el CICLO en el que voy
-$BINDIR/glog.sh "proc" "INFO: Ciclo Nº: $CICLO"
+$BINDIR/glog.sh "proc" "Ciclo Nº: $CICLO"
 done
 
 PID_PROCESO=`ps -a | grep proc.sh | awk '{print $1}'`
-$BINDIR/glog.sh "proc" "INFO: Programa finalizado con pid: $PID_PROCESO"
+$BINDIR/glog.sh "proc" "Programa finalizado con pid: $PID_PROCESO"
 
 exit 0
 

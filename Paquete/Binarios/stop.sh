@@ -5,13 +5,13 @@ PID_PROCESO=`ps -a | grep $NOMBRE_PROCESO | awk '{print $1}'`
 
 if [ -z $PID_PROCESO ]
 then
-  echo "ERROR: El programa no se encuentra ejecutado."
-  $BINDIR/glog.sh "stop" "ERROR: El programa no se encuentra ejecutado."
+  echo "El programa no se encuentra ejecutado."
+  $BINDIR/glog.sh "stop" "El programa no se encuentra ejecutado." "ERROR"
 else
   #mandamos senial para terminar el proceso	
   kill -15 $PID_PROCESO
   echo "Finalizando el programa con pid: $PID_PROCESO"
-  $BINDIR/glog.sh "stop" "INFO: Finalizando el programa con pid: $PID_PROCESO"
+  $BINDIR/glog.sh "stop" "Finalizando el programa con pid: $PID_PROCESO"
 fi
 
 exit 0
