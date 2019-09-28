@@ -64,7 +64,7 @@ findDirGrupo()
 
 checkIfFileExists()
 {
-	./glog.sh "inicio" "INFO: Verificando que el archivo $FILE existe..."
+	$BINDIR/glog.sh "inicio" "INFO: Verificando que el archivo $FILE existe..."
 	fileExists="YES"
 	FILE=$1
 	if [ ! -f "$FILE" ]
@@ -75,7 +75,7 @@ checkIfFileExists()
 
 checkIfFileIsReadable()
 {
-	./glog.sh "inicio" "INFO: Verificando que el archivo $FILE tenga permisos de Lectura..."	
+	$BINDIR/glog.sh "inicio" "INFO: Verificando que el archivo $FILE tenga permisos de Lectura..."	
 	fileReadable="YES"
 	FILE=$1
 	if [ ! -r "$FILE" ]
@@ -87,7 +87,7 @@ checkIfFileIsReadable()
 
 checkIfFileIsExecutable()
 {
-	./glog.sh "inicio" "INFO: Verificando que el archivo $FILE tenga permisos de ejecucion..."
+	$BINDIR/glog.sh "inicio" "INFO: Verificando que el archivo $FILE tenga permisos de ejecucion..."
 	fileExecutable="YES"
 	FILE=$1
 	if [ ! -x "$FILE" ]
@@ -99,7 +99,7 @@ checkIfFileIsExecutable()
 
 unsetVars()
 {
-	./glog.sh "inicio" "INFO: unset variables de ambiente..."
+	$BINDIR/glog.sh "inicio" "INFO: unset variables de ambiente..."
 	unset TP_SISOP_INIT
 	unset GRUPODIR
 	unset CONFDIR
@@ -119,7 +119,7 @@ unsetVars()
 #	Leo las variables del archivo tpconfig.txt
 readTpconfig()
 {
-	./glog.sh "inicio" "INFO: leyendo archvio tpconfgi.txt....."
+	$BINDIR/glog.sh "inicio" "INFO: leyendo archvio tpconfgi.txt....."
 	VARCOUNT=0	
 	ALLDIREXISTS="YES"
 	while read REGISTRO
@@ -138,7 +138,7 @@ readTpconfig()
 		if [ ! -d "$VALOR" ]	
 		then
 			echo "Cargando variable $VARIABLE y ruta $VALOR... ERROR - RUTA INEXISTENTE"
-			./glog.sh "inicio" "Cargando variable $VARIABLE y ruta $VALOR... ERROR - RUTA INEXISTENTE"
+			$BINDIR/glog.sh "inicio" "INFO: Cargando variable $VARIABLE y ruta $VALOR... ERROR - RUTA INEXISTENTE"
 			ALLDIREXISTS="NO"
  		else
 			case $VARIABLE in
@@ -191,11 +191,11 @@ readTpconfig()
 			if [ "$NOMBRECORRECTO" == "NO" ]
 			then
 				echo "Cargando variable $VARIABLE y ruta $VALOR... ERROR - NOMBRE INCORRECTO"
-				./glog.sh "inicio" "Cargando variable $VARIABLE y ruta $VALOR... ERROR - NOMBRE INCORRECTO"
+				$BINDIR/glog.sh "inicio" "INFO: Cargando variable $VARIABLE y ruta $VALOR... ERROR - NOMBRE INCORRECTO"
 				
 			else
 				echo "Cargando variable $VARIABLE y ruta $VALOR... OK"
-				./glog.sh "inicio" "Cargando variable $VARIABLE y ruta $VALOR... OK"
+				$BINDIR/glog.sh "inicio" "INFO: Cargando variable $VARIABLE y ruta $VALOR... OK"
 			fi
 		fi	
 
@@ -223,6 +223,7 @@ verificarExistenTodasLasRutas()
 	if [ "$ALLDIREXISTS" == "NO" ]
 	then
 		echo "Se han encontrado una o más rutas inexistentes para los directorios... ERROR"
+		$BINDIR/glog.sh "inicio" "ERROR: Se han encontrado una o más rutas inexistentes para los directorios."
 		inicializacionAbortadaMsj
 		unsetVars
 		return 0
@@ -248,6 +249,7 @@ exportarVariables()
 
 	echo "Sistema inicializado con éxito. Se procede con la invocación del comando start para iniciar el proceso en segundo plano"
 	echo "====================== INICIALIZACION COMPLETADA CON EXITO ======================"
+	$BINDIR/glog.sh "inicio" "INFO: ====================== INICIALIZACION COMPLETADA CON EXITO ======================"
 }
 
 activarProceso()
@@ -263,6 +265,7 @@ activarProceso()
 
 		PID=$(ps | grep "proc.sh" | cut -d' ' -f1)
 		echo "============ Se inicia proceso.sh ID:$PID============"
+		"$BINDIR"/glog.sh "iniicio" "INFO: ============ Se inicia proc.sh ID:$PID============"
 	fi
 }
 
@@ -272,24 +275,24 @@ init()
 	findDirGrupo
 
 	echo "Corriendo Scripts de Inicializacion..."	
-	./glog.sh "inicio" "INFO: Corriendo Scripts de Inicializacion..."
+	$BINDIR/glog.sh "inicio" "INFO: Corriendo Scripts de Inicializacion..."
 	
 	#verificarSiEstaIniciado
 	#--------------------------------------------------------------------------------------------------------#	
 	#      VERIFICAR QUE EL SISTEMA NO ESTE INICIADO	       
 
 	echo "Verificando que el sistema no se encuentre inicializado..."	
-	./glog.sh "inicio" "INFO: Verificando que el sistema no se encuentre inicializado.."
+	$BINDIR/glog.sh "inicio" "INFO: Verificando que el sistema no se encuentre inicializado.."
 
 	if [ "$TP_SISOP_INIT" == "YES" ] 
 	then
 		echo "El sistema ya se encuentra  inicializado."
-		./glog.sh "inicio" "WARNING: El sistema ya se encuentra inicializado."
+		$BINDIR/glog.sh "inicio" "WARNING: El sistema ya se encuentra inicializado."
 		inicializacionAbortadaMsj
 		return 0
 	else
 		echo "El sistema no se encuentra inicializado..."
-		./glog.sh "inicio" "INFO: El sistema no se encuentra inicializado."
+		$BINDIR/glog.sh "inicio" "INFO: El sistema no se encuentra inicializado."
 	fi
 
 
@@ -305,22 +308,27 @@ init()
 	if [ "$fileExists" == "NO" ]
 	then
 		echo "Verificando existencia del archivo de configuración... ERROR"
+		$BINDIR/glog.sh "inicio" "ERROR: Verificando existencia del archivo de configuración."
 		#inicializacionAbortadaMsj "MsjAbortConfNoE"
 		return 0
 	else
 		echo "Verificando existencia del archivo de configuración... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Verificando existencia del archivo de configuración... OK"
 	
 		echo "Setando permiso de lectura al archivo de configuración... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Setando permiso de lectura al archivo de configuración... OK"
 		chmod +r "$CONFDIR/tpconfig.txt"
 
 		checkIfFileIsReadable "$CONFDIR/tpconfig.txt"
 		if [ "$fileReadable" == "NO" ]
 		then
 			echo "Verificando que el archivo de configuración tenga permisos de lectura... ERROR"
+			$BINDIR/glog.sh "inicio" "ERROR: Verificando que el archivo de configuración tenga permisos de lectura."
 			#inicializacionAbortadaMsj "MsjAbortConfNoRead"
 			return 0
 		else
 			echo "Verificando que el archivo de configuración tenga permisos de lectura... OK"
+			$BINDIR/glog.sh "inicio" "INFO: Verificando que el archivo de configuración tenga permisos de lectura... OK"
 		fi
 	fi
 
@@ -330,6 +338,7 @@ init()
 	if [ "$ALLDIREXISTS" == "NO" ]
 	then
 		echo "Se han encontrado una o más rutas inexistentes para los directorios... ERROR"
+		$BINDIR/glog.sh "inicio" "ERROR: Se han encontrado una o más rutas inexistentes para los directorios."
 		inicializacionAbortadaMsj
 		unsetVars
 		return 0
@@ -339,11 +348,13 @@ init()
 	if [ "$VARCOUNT" != "10" ]
 	then
 		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... ERROR"
+		$BINDIR/glog.sh "inicio" "ERROR: Verificando cantidad esperada (10) y nombres de variables esperadas."
 		inicializacionAbortadaMsj
 		unsetVars
 		return 0
 	else
 		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Verificando cantidad esperada (10) y nombres de variables esperadas... OK"
 	fi
 
 	#verificarMaePermisos
@@ -353,12 +364,15 @@ init()
 	if [ "$fileExists" == "NO" ]
 	then
 		echo "Verificando existencia de los archivos maestros en $MAEDIR... ERROR"
+		$BINDIR/glog.sh "inicio" "ERROR: Verificando existencia de los archivos maestros en $MAEDIR."
 		#inicializacionAbortadaMsj
 		unsetVars
 		return 0
 	else
 		echo "Verificando existencia de los archivos maestros en $MAESTROSDIR... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Verificando existencia de los archivos maestros en $MAESTROSDIR... OK"
 		echo "Seteando permisos de lectura a los archivos maestros... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Seteando permisos de lectura a los archivos maestros... OK"
 		chmod +r "$MAEDIR/CodigosISO8583.txt"
 		#chmod +r "$MAESTROSDIR/Sucursales.txt"
 
@@ -368,11 +382,13 @@ init()
 		if [ "$fileReadable" == "NO" ]
 		then
 			echo "Verificando que los archivos maestros tengan permiso de lectura... ERROR"
+			$BINDIR/glog.sh "inicio" "ERROR: Verificando que los archivos maestros tengan permiso de lectura."
 			#inicializacionAbortadaMsj
 			unsetVars
 			return 0
 		else
 			echo "Verificando que los archivos maestros tengan permiso de lectura... OK"
+			$BINDIR/glog.sh "inicio" "INFO: Verificando que los archivos maestros tengan permiso de lectura... OK"
 		fi
 	fi
 
@@ -386,14 +402,17 @@ init()
 	if [ "$fileExists" == "NO" ]
 	then
 		echo "Verificando existencia de los archivos ejecutables en $BINDIR... ERROR"
+		$BINDIR/glog.sh "inicio" "ERROR: Verificando existencia de los archivos ejecutables en $BINDIR."
 		#inicializacionAbortadaMsj
 		unsetVars
 		echo "retornanado......"
 		return 0
 	else
 		echo "Verificando existencia de los archivos ejecutables en $BINDIR... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Verificando existencia de los archivos ejecutables en $BINDIR... OK"
 	
 		echo "Seteando permisos de ejecución a los archivos ejecutables... OK"
+		$BINDIR/glog.sh "inicio" "INFO: Seteando permisos de ejecución a los archivos ejecutables... OK"
 	
 		chmod +x "$BINDIR/loger.sh"
 		chmod +x "$BINDIR/glog.sh"
@@ -414,11 +433,13 @@ init()
 		if [ "$fileExecutable" == "NO" ]
 		then
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
+			$BINDIR/glog.sh "inicio" "ERROR: Verificando que los archivos ejecutables tengan permiso de ejecución."
 			inicializacionAbortadaMsj
 			unsetVars
 			return 0
 		else
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... OK"
+			$BINDIR/glog.sh "inicio" "INFO: Verificando que los archivos ejecutables tengan permiso de ejecución... OK"
 		fi
 	fi
 
