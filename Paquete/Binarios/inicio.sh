@@ -434,7 +434,7 @@ init()
 		then
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
 			./glog.sh "inicio" "Verificando que los archivos ejecutables tengan permiso de ejecución." "ERROR"
-			inicializacionAbortadaMsj
+			#inicializacionAbortadaMsj
 			unsetVars
 			return 0
 		else
