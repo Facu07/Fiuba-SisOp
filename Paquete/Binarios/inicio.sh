@@ -29,12 +29,28 @@ DIRLOG=""
 DIRNOV=""
 
 
+errorMsj()
+{
+	COD=$1
+	case $COD in
+		"ERR 1")
+		echo "Instalacion defectuosa"
+		echo "Por favor corra el scripts de instalacion para poder reparar el sistema...."
+		./glog.sh "inicio" "Instalacion defectuos"
+		./glog.sh "inicio" "Por favor corra el scripts de instalacion para poder reparar el sistema...."
+		;;
+
+	esac
+
+}
+
+
+
 #
 #Me muevo al directorio de inicio. -  GRUPO04
 #Cargo los directorios fijos en sus variables de ambiente
 findDirGrupo()
 {
-#--------Estado LIBERADO----------
 	GRUPO="$( cd "$(dirname "$0")" ; cd .. ; pwd -P )"
 	DIRLOG="$GRUPO/conf/log"
 	DIRCONF="$GRUPO/conf"
@@ -42,7 +58,6 @@ findDirGrupo()
 	export DIRLOG
 	export DIRCONF
 	chmod +x glog.sh
-	#./glog.sh "inicio" "Cargando variable $VARIABLE y ruta $VALOR... OK"
 }
 
 
@@ -201,7 +216,7 @@ verificarExistenTodasLasRutas()
 	then
 		echo "Se han encontrado una o más rutas inexistentes para los directorios... ERROR"
 		./glog.sh "inicio" "Se han encontrado una o más rutas inexistentes para los directorios." "ERROR"
-		inicializacionAbortadaMsj
+		errorMsj "ERR 1"
 		unsetVars
 		return 0
 	fi
@@ -247,6 +262,7 @@ activarProceso()
 }
 
 
+
 init()
 {
 	findDirGrupo
@@ -283,6 +299,7 @@ init()
 	then
 		echo "Verificando existencia del archivo de configuración... ERROR"
 		./glog.sh "inicio" "Verificando existencia del archivo de configuración." "ERROR"
+		errorMsj "ERR 1"
 		return 0
 	else
 		echo "Verificando existencia del archivo de configuración... OK"
@@ -297,6 +314,7 @@ init()
 		then
 			echo "Verificando que el archivo de configuración tenga permisos de lectura... ERROR"
 			./glog.sh "inicio" "Verificando que el archivo de configuración tenga permisos de lectura." "ERROR"
+			errorMsj "ERR 1"
 			return 0
 		else
 			echo "Verificando que el archivo de configuración tenga permisos de lectura... OK"
@@ -311,8 +329,10 @@ init()
 	then
 		echo "Se han encontrado una o más rutas inexistentes para los directorios... ERROR"
 		./glog.sh "inicio" "Se han encontrado una o más rutas inexistentes para los directorios." "ERROR"
+		errorMsj "ERR 1"
 		unsetVars
 		return 0
+
 	fi
 
 	#verificarTotalVar
@@ -320,7 +340,7 @@ init()
 	then
 		echo "Verificando cantidad esperada (10) y nombres de variables esperadas... ERROR"
 		./glog.sh "inicio" "Verificando cantidad esperada (10) y nombres de variables esperadas." "ERROR"
-		inicializacionAbortadaMsj
+		errorMsj "ERR 1"
 		unsetVars
 		return 0
 	else
@@ -337,6 +357,7 @@ init()
 		echo "Verificando existencia de los archivos maestros en $DIRMAE... ERROR"
 		./glog.sh "inicio" "Verificando existencia de los archivos maestros en $DIRMAE." "ERROR"
 		unsetVars
+		errorMsj "ERR 1"
 		return 0
 	else
 		echo "Verificando existencia de los archivos maestros en $MAESTROSDIR... OK"
@@ -352,6 +373,7 @@ init()
 			echo "Verificando que los archivos maestros tengan permiso de lectura... ERROR"
 			./glog.sh "inicio" "Verificando que los archivos maestros tengan permiso de lectura." "ERROR"
 			unsetVars
+			errorMSJ "ERR 1"
 			return 0
 		else
 			echo "Verificando que los archivos maestros tengan permiso de lectura... OK"
@@ -373,6 +395,7 @@ init()
 		./glog.sh "inicio" "Verificando existencia de los archivos ejecutables en $DIRBIN." "ERROR"
 		unsetVars
 		echo "retornaado......"
+		errorMsj "ERR 1"
 		return 0
 	else
 		echo "Verificando existencia de los archivos ejecutables en $DIRBIN... OK"
@@ -399,8 +422,8 @@ init()
 		then
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... ERROR"
 			./glog.sh "inicio" "Verificando que los archivos ejecutables tengan permiso de ejecución." "ERROR"
-			inicializacionAbortadaMsj
 			unsetVars
+			errorMsj "Err 1"
 			return 0
 		else
 			echo "Verificando que los archivos ejecutables tengan permiso de ejecución... OK"
