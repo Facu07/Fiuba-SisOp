@@ -22,7 +22,7 @@ setdir(){
 	then
 		DIRLOG="conf/log"
 	else
-		DIRLOG=$LOGDIR
+		DIRLOG=$DIRLOG
 	fi
 }
 
