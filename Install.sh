@@ -217,6 +217,7 @@ DIROK-$GRUPO/$DIROK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRNOK-$GRUPO/$DIRNOK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRPROC-$GRUPO/$DIRPROC-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIROUT-$GRUPO/$DIROUT-$USER-$(date '+%Y-%m-%d %H:%M:%S')
+DIRNOV-$GRUPO/novedades-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRLOG-$GRUPO/conf/log/-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > $DIRCONF/tpconfig.txt
 }
 
@@ -232,7 +233,7 @@ function creardirectorios() {
 	#loguear "Directorio para Archivos de Log: $DIRLOG" "INFO"
 	#mkdir -p "$DIRLOG"
 
-	loguear  "Directorio elegido para los ejecutables: $(obtenerVariable DIRBIN)" "INFO"
+	loguear  "Directorio elegido para los Ejecutables: $(obtenerVariable DIRBIN)" "INFO"
 
 	loguear "Directorio elegido para Archivos Maestros: $(obtenerVariable DIRMAE)" "INFO"
 
@@ -251,9 +252,13 @@ function creardirectorios() {
 	loguear "Directorio elegido para Archivos Procesados: $(obtenerVariable DIRPROC)" "INFO"
 	mkdir -p "$(obtenerVariable DIRPROC)"
 
+	loguear "Grabando Archivos Novedades: $(obtenerVariable DIRNOV)" "INFO"
+	mkdir -p "$(obtenerVariable DIRNOV)"
+	cp -R Paquete/Lotes/*.csv "$(obtenerVariable DIRNOV)"
 
 	loguear "Grabando Archivos Maestros: $(obtenerVariable DIRMAE)" "INFO"
-	cp -R Paquete/Lotes "$(obtenerVariable DIRMAE)"
+	mkdir -p "$(obtenerVariable DIRMAE)"
+	cp -R Paquete/CodigosISO8583.csv "$(obtenerVariable DIRMAE)"
 
 	loguear "Grabando Archivos Ejecutables: $(obtenerVariable DIRBIN)" "INFO"
 	cp -R Paquete/Binarios "$(obtenerVariable DIRBIN)"
