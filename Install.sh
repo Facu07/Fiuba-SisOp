@@ -4,25 +4,46 @@ GRUPO=${PWD}/grupo04
 DIRCONF=grupo04/conf
 DIRLOG=grupo04/conf/log
 DIRLOGBIN=Paquete/Binarios
+if [[ $1 = "-r" ]]; then
+	ISREPAIR="YES"
+fi
 
 
 
 main() {
 	export GRUPO
 
-	ISINSTALLED="$(ls -A grupo04)"
-	if [ -d "$ISINSTALLED" ]; then
-		necesitaRepararse="$(necesitaRepararse)"
-		if [[ $necesitaRepararse = "si" ]]; then
-			echo "Programa necesita reparación."
+	if ! [[ $ISREPAIR = "YES" ]]; then
+		if [ -d grupo04 ]; then
+			echo "is installed"
+			necesitaRepararse="$(necesitaRepararse)"
+			if [[ $necesitaRepararse = "si" ]]; then
+				echo "Programa necesita reparación."
+			fi
+			if [[ $necesitaRepararse = "no" ]]; then
+				echo "Programa instalado correctamente."
+				mostrarDirectoriosElegidos
+			fi
 		fi
-		if [[ $necesitaRepararse = "no" ]]; then
-			echo "Programa instalado correctamente."
-			mostrarDirectoriosElegidos
+		if ! [ -d grupo04 ]; then
+			instalarPrograma
 		fi
 	fi
-	if ! [ -d "$ISINSTALLED" ]; then
-		instalarPrograma
+
+	if [[ $ISREPAIR = "YES" ]]; then
+		if [ -d grupo04 ]; then
+			necesitaRepararse="$(necesitaRepararse)"
+			if [[ $necesitaRepararse = "si" ]]; then
+				repararPrograma
+			fi
+			if [[ $necesitaRepararse = "no" ]]; then
+				echo "Programa ya está instalado correctamente."
+				mostrarDirectoriosElegidos
+			fi
+		fi
+		if ! [ -d grupo04 ]; then
+			instalarPrograma
+		fi
 	fi
 
 }
@@ -275,10 +296,10 @@ function creardirectorios() {
 }
 
 function necesitaRepararse() {
-	if [[ -d "$(obtenerVariable DIRTRANS)"  &&  -d "$(obtenerVariable DIROK)"  &&  -d "$(obtenerVariable DIRNOK)"  &&  -d "$(obtenerVariable DIROUT)"  &&  -d "$(obtenerVariable DIRPROC)"  &&   -d "$(obtenerVariable DIRMAE)"  &&   -d "$(obtenerVariable DIRBIN)" ]]; then
+	if [[ -d "$(obtenerVariable DIRTRANS)"  && -d "$(obtenerVariable DIRNOV)"  &&  -d "$(obtenerVariable DIROK)"  &&  -d "$(obtenerVariable DIRNOK)"  &&  -d "$(obtenerVariable DIROUT)"  &&  -d "$(obtenerVariable DIRPROC)"  &&   -d "$(obtenerVariable DIRMAE)"  &&   -d "$(obtenerVariable DIRBIN)" ]]; then
 		echo "no"
 	fi
-	if ! [[ -d "$(obtenerVariable DIRTRANS)"  &&  -d "$(obtenerVariable DIROK)"  &&  -d "$(obtenerVariable DIRNOK)"  &&  -d "$(obtenerVariable DIROUT)"  &&  -d "$(obtenerVariable DIRPROC)"  &&   -d "$(obtenerVariable DIRMAE)"  &&   -d "$(obtenerVariable DIRBIN)" ]]; then
+	if ! [[ -d "$(obtenerVariable DIRTRANS)"  && -d "$(obtenerVariable DIRNOV)"  && -d "$(obtenerVariable DIROK)"  &&  -d "$(obtenerVariable DIRNOK)"  &&  -d "$(obtenerVariable DIROUT)"  &&  -d "$(obtenerVariable DIRPROC)"  &&   -d "$(obtenerVariable DIRMAE)"  &&   -d "$(obtenerVariable DIRBIN)" ]]; then
 		echo "si"
 	fi
 }
@@ -290,8 +311,7 @@ function repararPrograma() {
 }
 
 eliminarProgramaInstalado () {
-	rm -d -rf $(ls | grep -v conf | grep -v bin | grep -v mae | grep -v Install.sh)
-	rm $DIRCONF/tpconfig.txt
+	rm -rf grupo04
 }
 
 obtenerVariable(){
