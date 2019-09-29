@@ -81,16 +81,22 @@ CONTADOR=0
 
 for file in "$aceptados/"*.csv;
 do
-while IFS=',' read TO OPDes trx FC anio FH col7 col8 col9 col10 TN CR RN col14 col15 col16 col17 MH
-	do				
+	if [ ! "$(ls $aceptados/)" ]
+    then
+    	$BINDIR./glog.sh "proc" "No hay archivos en $aceptados..."
+    	echo "Se proceso todo en $aceptados"
+    	return 0
+    fi  
+	while IFS=',' read TO OPDes trx FC anio FH col7 col8 col9 col10 TN CR RN col14 col15 col16 col17 MH
+	do
+		nombreArchivo="${file##*$aceptados/}"	
 		if [[ "$TO" != "CI" ]]; 								# Modifico Internal Field Separator por ","
 		then													# To = Tipo Operacion		OPDes = Descripcion Oper
 			let CONTADOR=CONTADOR+1								# trx = cantidad tran 		TR = Trace Number
 		else													# FC = Fecha Cierre Lote	FH = Fecha y Hora
 			if [[ "$CONTADOR" = "$trx" ]]						# CR = Código de Respuesta ISO 8583
 			then 												# RN = Reference Number 	MH = Mensaje del Host	
-				nombreArchivo="${file##*$novedades/}"			# El resto se calcula con MH
-				procesar
+				procesar										# El resto se calcula con MH				
 				CONTADOR=0
 			else
 				mv $file $rechazados			# Mueve a la carpeta de rechazados
@@ -129,7 +135,7 @@ echo -e $TO,$OPDes,$trx,$FC,$anio,$FH,$TN,$CR,$RN,$MH,$nBatch,$cantCompras,$mont
 #echo $cantAnul
 #echo $montoAnul
 
-mv $archivo $procesados						# Mueve a la carpeta de procesados
+mv $file $procesados						# Mueve a la carpeta de procesados
 mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
 
 # Grabar en el log “Batch Nº xxx ($nBatch) grabado en cierre de lote"
@@ -165,20 +171,27 @@ while [ $PROCESO_ACTIVO = true ]
 do
 	for file in "$novedades/"*.csv;
 	do
-		set CICLO=CILO+1
-		nombreArchivo="${file##*$novedades/}"
-		archivo=$file
-		lote="${nombreArchivo%_*}"
-		nn="${nombreArchivo##*_}"
-		nn="${nn%*.csv}"
-		if validar_Archivo; 
-		then	
-			mv $archivo $aceptados					# Mueve a la carpeta de aceptados
-			# Grabar en el log el nombre del archivo aceptado
-			$BINDIR./glog.sh "proc" "Archivo $archivo aceptado"
-		else
-			mv $archivo $rechazados					# Mueve a la carpeta de rechazados
-		fi
+		if [ "$(ls $novedades/)" ]
+    	then  
+        	 set CICLO=CILO+1
+			nombreArchivo="${file##*$novedades/}"
+			archivo=$file
+			lote="${nombreArchivo%_*}"
+			nn="${nombreArchivo##*_}"
+			nn="${nn%*.csv}"
+			if validar_Archivo; 
+			then	
+				mv $archivo $aceptados					# Mueve a la carpeta de aceptados
+				# Grabar en el log el nombre del archivo aceptado
+				$BINDIR./glog.sh "proc" "Archivo $archivo aceptado"
+			else
+				mv $archivo $rechazados					# Mueve a la carpeta de rechazados
+			fi
+     	else 
+         	echo "Nada por procesar"
+         	$BINDIR./glog.sh "proc" "No hay archivos en $novedades..."
+     	fi
+		
 	done
 
 	validar_cantidad_trx
