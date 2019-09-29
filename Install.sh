@@ -58,11 +58,12 @@ instalarPrograma() {
 setearDirectoriosPorDefecto() {
 	DIRBIN=bin #a-El directorio de ejecutables
 	DIRMAE=mae #b-El directorio de archivos maestros
-	DIRTRANS=trans #c-El directorio de arribo de archivos externos
+	DIRNOV=nov #c-El directorio de arribo de archivos externos
 	DIROK=ok #d-El directorio donde se depositan temporalmente los aceptados para que luego se procesen
 	DIRNOK=nok #e-El directorio donde se depositan todos los archivos rechazados
 	DIRPROC=proc #f-El directorio donde se depositan los archivos ya procesados
 	DIROUT=out #g-El directorio donde se depositan los archivos de salida
+	DIRTRANS=trans #c-El directorio donde se depositan las transacciones procesadass
 
 	CONFIRMO_DIRECTORIOS=NO
 }
@@ -94,11 +95,12 @@ loguearDirectoriosPorDefecto(){
 	loguear "Directorio por defecto de Configuración: $DIRCONF " "INFO" #0
 	loguear "Directorio por defecto de Ejecutables: $DIRBIN " "INFO"#a
 	loguear "Directorio por defecto de Maestros y Tablas: $DIRMAE " "INFO"#b
-	loguear "Directorio por defecto de Recepcion de Transacciones: $DIRTRANS " "INFO"#c
+	loguear "Directorio por defecto de Recepcion de Novedades: $DIRNOV " "INFO"#c
 	loguear "Directorio por defecto de Archivos s: $DIROK " "INFO"#d
 	loguear "Directorio por defecto de Archivos Rechazados: $DIRNOK " "INFO" #e
 	loguear "Directorio por defecto de Archivos Procesados: $DIRPROC " "INFO"#f
 	loguear "Directorio por defecto de Archivos de Salida: $DIROUT " "INFO" #g
+	loguear "Directorio por defecto de Transacciones Procesadas: $DIRTRANS " "INFO"#h
 
 }
 
@@ -116,10 +118,10 @@ function elegirDirectorios() {
 	directorios+=("$DIRMAE")
 	loguear "El usuario eligio el nombre $DIRMAE para el directorio de maestros y tablas" "INFO"
 	#c
-	echo "Defina el directorio de recepción de transacciones ($DIRTRANS): "
-	setearDirectorio DIRTRANS
-	directorios+=("$DIRTRANS")
-	loguear "El usuario eligio el nombre $DIRTRANS para el directorio de recepcion de transacciones" "INFO"
+	echo "Defina el directorio de recepción de novedades ($DIRNOV): "
+	setearDirectorio DIRNOV
+	directorios+=("$DIRNOV")
+	loguear "El usuario eligio el nombre $DIRNOV para el directorio de recepcion de novedades" "INFO"
 	#d
 	echo "Defina el directorio de Archivos Aceptados ($DIROK): "
 	setearDirectorio DIROK
@@ -140,6 +142,11 @@ function elegirDirectorios() {
 	setearDirectorio DIROUT
 	directorios+=("$DIROUT")
 	loguear "El usuario eligio el nombre $DIROUT para el directorio de archivos de salida" "INFO"
+	#h
+	echo "Defina el directorio de transacciones procesadas ($DIRTRANS): "
+	setearDirectorio DIRTRANS
+	directorios+=("$DIRTRANS")
+	loguear "El usuario eligio el nombre $DIRTRANS para el directorio de transacciones procesadas" "INFO"
 }
 
 function setearDirectorio(){
@@ -179,11 +186,12 @@ function esDirReservado(){
 function mostrarDirectoriosElegidos() {
 	echo "Directorio elegido para los ejecutables: $DIRBIN"
 	echo "Directorio elegido para Archivos Maestros: $DIRMAE"
-	echo "Directorio elegido para Recepcion de Transacciones: $DIRTRANS"
+	echo "Directorio elegido para Recepcion de Novedades: $DIRNOV"
 	echo "Directorio elegido para Archivos Temporalmente Aceptados: $DIROK"
 	echo "Directorio elegido para Archivos Rechazados: $DIRNOK"
 	echo "Directorio elegido para Archivos Procesados: $DIRPROC"
 	echo "Directorio elegido para Archivos de Salida: $DIROUT"
+	echo "Directorio elegido para Transacciones Procesadas: $DIRTRANS"
 }
 
 function confirmarInstalacion() {
@@ -212,11 +220,12 @@ function grabarConfig() {
 DIRCONF-$GRUPO/conf/-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRBIN-$GRUPO/$DIRBIN-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRMAE-$GRUPO/$DIRMAE-$USER-$(date '+%Y-%m-%d %H:%M:%S')
-DIRTRANS-$GRUPO/$DIRTRANS-$USER-$(date '+%Y-%m-%d %H:%M:%S')
+DIRNOV-$GRUPO/$DIRNOV-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIROK-$GRUPO/$DIROK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRNOK-$GRUPO/$DIRNOK-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRPROC-$GRUPO/$DIRPROC-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIROUT-$GRUPO/$DIROUT-$USER-$(date '+%Y-%m-%d %H:%M:%S')
+DIRTRANS-$GRUPO/$DIRTRANS-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRNOV-$GRUPO/novedades-$USER-$(date '+%Y-%m-%d %H:%M:%S')
 DIRLOG-$GRUPO/conf/log/-$USER-$(date '+%Y-%m-%d %H:%M:%S')" > $DIRCONF/tpconfig.txt
 }
@@ -230,15 +239,12 @@ function creardirectorios() {
 
 	loguear "Instalando programas y funciones" "INFO"
 
-	#loguear "Directorio para Archivos de Log: $DIRLOG" "INFO"
-	#mkdir -p "$DIRLOG"
-
 	loguear  "Directorio elegido para los Ejecutables: $(obtenerVariable DIRBIN)" "INFO"
 
 	loguear "Directorio elegido para Archivos Maestros: $(obtenerVariable DIRMAE)" "INFO"
 
-	loguear "Directorio elegido para Recepcion de Transacciones: $(obtenerVariable DIRTRANS)" "INFO"
-	mkdir -p "$(obtenerVariable DIRTRANS)"
+	loguear "Directorio elegido para Recepcion de Novedades: $(obtenerVariable DIRNOV)" "INFO"
+	mkdir -p "$(obtenerVariable DIRNOV)"
 
 	loguear "Directorio elegido para Archivos Aceptados: $(obtenerVariable DIROK)" "INFO"
 	mkdir -p "$(obtenerVariable DIROK)"
@@ -251,6 +257,9 @@ function creardirectorios() {
 
 	loguear "Directorio elegido para Archivos Procesados: $(obtenerVariable DIRPROC)" "INFO"
 	mkdir -p "$(obtenerVariable DIRPROC)"
+
+	loguear "Directorio elegido para Transacciones Procesadas: $(obtenerVariable DIRTRANS)" "INFO"
+	mkdir -p "$(obtenerVariable DIRTRANS)"
 
 	loguear "Grabando Archivos Novedades: $(obtenerVariable DIRNOV)" "INFO"
 	mkdir -p "$(obtenerVariable DIRNOV)"
