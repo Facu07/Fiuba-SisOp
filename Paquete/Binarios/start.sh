@@ -10,19 +10,20 @@ then
   then
     PID_PROCESO=`ps -a | grep $NOMBRE_PROCESO | awk '{print $1}'`
     echo "El programa ya se encuentra ejecutado con pid: $PID_PROCESO"
-    $BINDIR/glog.sh "start" "El programa ya se encuentra ejecutado con pid: $PID_PROCESO" "ERROR"
+    $BINDIR./glog.sh "start" "El programa ya se encuentra ejecutado con pid: $PID_PROCESO"
     exit 0
   fi
 
   #start daemon
-  $BINDIR/proc.sh &
+  $BINDIR./proc.sh &
 
   PID_PROCESO=`ps -a | grep $NOMBRE_PROCESO | awk '{print $1}'`
   echo "Programa iniciado con pid: $PID_PROCESO"
-  $BINDIR/glog.sh "start" "Programa iniciado con pid: $PID_PROCESO"
+  $BINDIR./glog.sh "start" "Programa iniciado con pid: $PID_PROCESO"
 
 else
   echo "El ambiente no fue inicializado."
+  ./glog.sh "start" "El ambiente no fue inicializado.... ERROR"
 fi
 
 exit 0
