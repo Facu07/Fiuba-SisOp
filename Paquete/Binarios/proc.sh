@@ -1,34 +1,5 @@
 #! /bin/bash
 
-#	GRUPODIR: 	Directorio principal 
-#	BINDIR:		Directorio de Archivos binarios
-#	MAEDIR:		Directorio de archvios Maestros
-#	NOVDIR:		Directorio de Novedades
-#	RECHDIR:	Directoiro de Archivos rechazados
-#	PROCDIR:	Directorio de archivos a procesar y aceptados
-#	SALDIR:		Directorio de Archvos de salida
-#	ARRDIR:		Directorio de Archivos de Arribo
-#	CONFDIR: 	Directorio de configuracion - GRUPO04/conf
-#	LOGDIR: 	Directorio de archivos de LOG - GRUPO04/conf/log
-
-
-
-
-#---Listado de variables de ambiente
-GRUPODIR=""
-BINDIR=""
-MAEDIR=""
-NOVDIR=""
-RECHDIR=""
-PROCDIR=""
-SALDIR=""
-ACEPDIR=""
-CONFDIR=""
-LOGDIR=""
-
-
-
-
 function validar_Existe_NoVacio_Regular
 {
 
@@ -41,15 +12,14 @@ then
 			return 0									#Existe y no esta vacío && Exite y puede leerse 
 		fi
 		# Grabar en el log el nombre del archivo rechazado. Motivo: No es un archivo normal
-		$BINDIR/glog.sh "proc" "$nombreArchivo rechazado. Motivo: No es un archivo normal" "ERROR"
-		return -1
+		$BINDIR./glog.sh "proc" "$nombreArchivo rechazado. Motivo: No es un archivo normal"
 	fi
 	# Grabar en el log el nombre del archivo rechazado. Motivo: No es legible
-	$BINDIR/glog.sh "proc" "$nombreArchivo rechazado. Motivo: No es legible" "ERROR"
+	$BINDIR./glog.sh "proc" "$nombreArchivo rechazado. Motivo: No es legible"
 	return -1
 fi
 # Grabar en el log el nombre del archivo rechazado. Motivo: Archivo vacio
-$BINDIR/glog.sh "proc" "$nombreArchivo rechazado. Motivo: Archivo vacio" "ERROR"
+$BINDIR./glog.sh "proc" "$nombreArchivo rechazado. Motivo: Archivo vacio"
 return -1
 
 }
@@ -73,21 +43,16 @@ return -1
 function validar_Repetido
 {
 
-cd ..
-cd $procesados/
-for file in $(ls);
+
+for file in "$procesados/"*.csv;
 	do
-		if [[ $nombreArchivo == $file ]];
+		if [[ $archivo == $file ]];
 		then
 			# Grabar en log que se rechaza el $nombreArchivo por que esta duplicado
-			$BINDIR/glog.sh "proc" "Se rechaza el $nombreArchivo por estar duplicado" "ERROR"
-			cd ..
-			cd $novedades/
+			$BINDIR./glog.sh "proc" "Se rechaza el $nombreArchivo por estar duplicado"
 			return -1 
 		fi
 	done
-cd ..
-cd $novedades/
 return 0
 
 }
@@ -114,18 +79,18 @@ function validar_cantidad_trx
 CONTADOR=0
 
 
-for file in $(ls);
+for file in "$aceptados/"*.csv;
 do
 while IFS=',' read TO OPDes trx FC anio FH col7 col8 col9 col10 TN CR RN col14 col15 col16 col17 MH
 	do				
-		if [[ "$TO" != "CI" ]]; 				# Modifico Internal Field Separator por ","
-		then									# To = Tipo Operacion		OPDes = Descripcion Oper
-			let CONTADOR=CONTADOR+1				# trx = cantidad tran 		TR = Trace Number
-		else									# FC = Fecha Cierre Lote	FH = Fecha y Hora
-			if [[ "$CONTADOR" = "$trx" ]]		# CR = Código de Respuesta ISO 8583
-			then 								# RN = Reference Number 	MH = Mensaje del Host	
-				nombreArchivo="$file"			# El resto se calcula con MH
-				proc
+		if [[ "$TO" != "CI" ]]; 								# Modifico Internal Field Separator por ","
+		then													# To = Tipo Operacion		OPDes = Descripcion Oper
+			let CONTADOR=CONTADOR+1								# trx = cantidad tran 		TR = Trace Number
+		else													# FC = Fecha Cierre Lote	FH = Fecha y Hora
+			if [[ "$CONTADOR" = "$trx" ]]						# CR = Código de Respuesta ISO 8583
+			then 												# RN = Reference Number 	MH = Mensaje del Host	
+				nombreArchivo="${file##*$novedades/}"			# El resto se calcula con MH
+				procesar
 				CONTADOR=0
 			else
 				mv $file $rechazados			# Mueve a la carpeta de rechazados
@@ -133,7 +98,7 @@ while IFS=',' read TO OPDes trx FC anio FH col7 col8 col9 col10 TN CR RN col14 c
 				# cantidad de transacciones informadas en el cierre, cantidad en el lote
 				# "$trx tiene cantidad informada en el cierre"
 				# "$CONTADOR tiene cantidad posta en el lote"
-				$BINDIR/glog.sh "proc" "$nombreArchivo. Cantidad de transacciones informadas en el cierre: $trx. Cantidad en el lote: $CONTADOR"
+				$BINDIR./glog.sh "proc" "$nombreArchivo. Cantidad de transacciones informadas en el cierre: $trx. Cantidad en el lote: $CONTADOR"
 				CONTADOR=0
 			fi
 		fi
@@ -164,11 +129,11 @@ echo -e $TO,$OPDes,$trx,$FC,$anio,$FH,$TN,$CR,$RN,$MH,$nBatch,$cantCompras,$mont
 #echo $cantAnul
 #echo $montoAnul
 
-mv $nombreArchivo $procesados						# Mueve a la carpeta de procesados
+mv $archivo $procesados						# Mueve a la carpeta de procesados
 mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
 
 # Grabar en el log “Batch Nº xxx ($nBatch) grabado en cierre de lote"
-$BINDIR/glog.sh "proc" "Batch Nº: $nBatch grabado en cierre de lote"
+$BINDIR./glog.sh "proc" "Batch Nº: $nBatch grabado en cierre de lote"
 
 return 0
 
@@ -181,27 +146,27 @@ CICLO=0
 PROCESO_ACTIVO=true
 
 carpetas=$(pwd)
-novedades="$NOVDIR"
-aceptados="$ACEPDIR"
-rechazados="$RECHDIR"
-procesados="$PROCDIR"
-cierreLotes="$SALDIR"
-cd $novedades/
+novedades="$DIRNOV"
+aceptados="$DIROK"
+rechazados="$DIRNOK"
+procesados="$DIRPROC"
+cierreLotes="$DIROUT"
 
+$BINDIR./glog.sh "proc" "Procesando... "
 function finalizar_proceso {
    let PROCESO_ACTIVO=false
 }
 
+
 trap finalizar_proceso SIGINT SIGTERM
+
 
 while [ $PROCESO_ACTIVO = true ]
 do
-	$BINDIR/glog.sh "proc" "Procesando... "
-
-	set CICLO=CILO+1
-	for file in $(ls);
+	for file in "$novedades/"*.csv;
 	do
-		nombreArchivo="$file"
+		set CICLO=CILO+1
+		nombreArchivo="${file##*$novedades/}"
 		archivo=$file
 		lote="${nombreArchivo%_*}"
 		nn="${nombreArchivo##*_}"
@@ -209,26 +174,24 @@ do
 		if validar_Archivo; 
 		then	
 			mv $archivo $aceptados					# Mueve a la carpeta de aceptados
-		# Grabar en el log el nombre del archivo aceptado
-		$BINDIR/glog.sh "proc" "Archivo $archivo aceptado"
+			# Grabar en el log el nombre del archivo aceptado
+			$BINDIR./glog.sh "proc" "Archivo $archivo aceptado"
 		else
 			mv $archivo $rechazados					# Mueve a la carpeta de rechazados
 		fi
 	done
 
-	cd ..
-	cd $aceptados/
-
 	validar_cantidad_trx
 
-sleep 10
+	sleep 10
 
-#loggear el CICLO en el que voy
-$BINDIR/glog.sh "proc" "Ciclo Nº: $CICLO"
+	#loggear el CICLO en el que voy
+	$BINDIR./glog.sh "proc" "Ciclo Nº: $CICLO"
+
 done
 
 PID_PROCESO=`ps -a | grep proc.sh | awk '{print $1}'`
-$BINDIR/glog.sh "proc" "Programa finalizado con pid: $PID_PROCESO"
+$BINDIR./glog.sh "proc" "Programa finalizado con pid: $PID_PROCESO"
 
 exit 0
 
