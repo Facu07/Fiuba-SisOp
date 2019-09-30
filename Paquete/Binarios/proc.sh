@@ -92,15 +92,15 @@ do
 		nombreArchivo="${file##*$aceptados/}"	
 		if [[ "$TO" != "CI" ]]; 								# Modifico Internal Field Separator por ","
 		then													# TO = Tipo Operacion		OPDes = Descripcion Oper
-			let CONTADOR=CONTADOR+1	
-			procesarTransacciones								# trx = cantidad tran 		TN = Trace Number
+			let CONTADOR=CONTADOR+1								# trx = cantidad tran 		TN = Trace Number
+			procesarTransacciones
 		else													# FC = Fecha Cierre Lote	FH = Fecha y Hora
 			if [[ "$CONTADOR" = "$trx" ]]						# CR = Código de Respuesta ISO 8583
 			then 												# RN = Reference Number 	MH = Mensaje del Host	
-				procesarCierre									# NT = Numero de Tarjeta				
+				procesarCierre									# NT = Numero de Tarjeta
 				CONTADOR=0
 			else
-				mv $file $rechazados			# Mueve a la carpeta de rechazados
+				mv $file $rechazados							# Mueve a la carpeta de rechazados
 				# Grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo:
 				# cantidad de transacciones informadas en el cierre, cantidad en el lote
 				# "$trx tiene cantidad informada en el cierre"
@@ -118,7 +118,7 @@ return 0
 function procesarCierre
 {
 archivoCierre="Cierre_de_$nombreArchivo"
-touch "$archivoCierre"
+
 nBatch=${MH:5:3}
 cantCompras=${MH:8:4}
 montoCompras=${MH:12:1}
@@ -126,13 +126,15 @@ cantDevolu=${MH:13:4}
 montoDevolu=${MH:17:1}
 cantAnul=${MH:18:4}
 montoAnul=${MH:22:1}
-echo -e $TO,$OPDes,$trx,$FC,$anio,$FH,$TN,$CR,$RN,$MH,$nBatch,$cantCompras,$montoCompras,$cantDevolu,$montoDevolu,$cantAnul,$montoAnul >> "$archivoCierre"
+echo -e $TO,$OPDes,$trx,$FC,$anio,$FH,$TN,$CR,$RN,$MH,$nBatch,$cantCompras,$montoCompras,$cantDevolu,$montoDevolu,$cantAnul,$montoAnul >> "$cierreLotes/$archivoCierre"
 
 mv $file $procesados								# Mueve a la carpeta de procesados
-mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
+#mv $archivoCierre $cierreLotes 						# Mueve a la carpeta de Cierre_de_Lotes
 
 # Grabar en el log “Batch Nº xxx ($nBatch) grabado en cierre de lote"
 $BINDIR./glog.sh "proc" "Batch Nº: $nBatch grabado en cierre de lote"
+$BINDIR./glog.sh "proc" "Batch Nº: $nBatch y cantidad de transacciones: $CONTEO"
+unset CONTEO
 
 
 }
@@ -150,8 +152,7 @@ mm=${FH:10:2}
 ss=${FH:12:2}
 monto=${importe:4:10}
 decimales=${importe:14:2}
-archivoTransaccion="TRX-$tempanio$mes$dia($CONTEO).csv"
-touch "$transacciones/$archivoTransaccion"
+archivoTransaccion="TRX-$tempanio$mes$dia.csv"
 
 if [ -z "$MH" ]; 
 then
@@ -167,11 +168,7 @@ else
 	mensajeHost=${MH:5}
 fi
 
-echo "$mensajeHost"
-
 echo -e $TO,$OPDes,$anio,$FH,$NT,$venc,$importe,$cuotas,$TN,$CR,$RN,$ticket,$autori,$idTRX,$trxRel,$mensajeHost,$mes,$dia,$hh:$mm:$ss,$monto.$decimales >> "$transacciones/$archivoTransaccion"
-
-#cp -n "$aceptados/$archivoTransaccion" "$transacciones/" 			# Copia a la carpeta de transacciones
 
 
 unset tempanio
@@ -184,7 +181,6 @@ unset ss
 unset monto
 unset decimales
 
-#rm "$aceptados/$archivoTransaccion"
 
 # Grabar en el log “Batch Nº xxx ($nBatch) grabado en cierre de lote"
 #$BINDIR./glog.sh "proc" "Batch Nº: $nBatch grabado en cierre de lote"
@@ -218,9 +214,9 @@ while [ $PROCESO_ACTIVO = true ]
 do
 	for file in "$novedades/"*.csv;
 	do
+		let CICLO=CICLO+1
 		if [ "$(ls $novedades/)" ]
     	then  
-        	 set CICLO=CILO+1
 			nombreArchivo="${file##*$novedades/}"
 			archivo=$file
 			lote="${nombreArchivo%_*}"
@@ -234,7 +230,7 @@ do
 			else
 				mv $archivo $rechazados					# Mueve a la carpeta de rechazados
 			fi
-     	else 
+     	else
          	echo "Nada por procesar"
          	$BINDIR./glog.sh "proc" "No hay archivos en $novedades..."
      	fi
