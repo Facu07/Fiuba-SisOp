@@ -6,7 +6,6 @@
 		WHEN=`date`
 		WHO=`whoami`
 		WHERE=$1
-		echo $WHERE
 		if [ $# -eq 3 ]; then
 			if [ $3 == 'INFO' -o $3 == 'WAR' -o $3 == 'ERR' ]; then
 				WHAT=$3
@@ -20,7 +19,6 @@
 		Separador="="
 		Linea="[$WHEN] $Separador [$WHO] $Separador [$WHERE] $Separador [$WHAT] $Separador $WHY"
 		LOG_DIR="$DIRLOG/$WHERE.log"
-		echo $LOG_DIR
 
 		if [ -f "$LOG_DIR" ]; then
 			echo $Linea>>"$LOG_DIR"
