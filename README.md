@@ -24,6 +24,7 @@ Ejecucion del scripts:
 2. ejecutar el scripts de la sigueinte mandera:
             #. inisio.sh
             
-3. una vez terminiada la inicialización tendar dsiponibel en su ambiente las variaralbes necesarias para correr el sistema
-4. El scripts chequea existencia del archivo tpconfgi.txt, qeu todas las varibles necesarias esten presentes y definidas en el archivo, la existencia  de todos los directorios y los permissoso de lso archivos presentes en el directorio de binarios. 
+3. una vez terminiada la inicialización tendrá disponible en su ambiente las variaralbes necesarias para correr el sistema
+4. El scripts chequea existencia del archivo tpconfgi.txt, que todas las varibles necesarias esten presentes y definidas en el archivo, la existencia  de todos los directorios y los permisos de ejecución  de los  archivos presentes en el directorio de binarios. 
+5. si no se cumplen esta condiciones la inicialización mostrará un mensaje de error y se deberá recuperar el sistema. 
 
