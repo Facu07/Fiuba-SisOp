@@ -9,8 +9,8 @@ then
   if [ $CANT_PROCESOS_CORRIENDO -gt 0 ]
   then
     PID_PROCESO=`ps -a | grep $NOMBRE_PROCESO | awk '{print $1}'`
-    echo "El programa ya se encuentra ejecutado con pid: $PID_PROCESO"
-    $BINDIR./glog.sh "start" "El programa ya se encuentra ejecutado con pid: $PID_PROCESO"
+    echo "El programa porc.sh ya se encuentra ejecutado con pid: $PID_PROCESO"
+    $BINDIR./glog.sh "start" "El programa proc.sh ya se encuentra ejecutado con pid: $PID_PROCESO"
     exit 0
   fi
 
@@ -18,8 +18,8 @@ then
   $BINDIR./proc.sh &
 
   PID_PROCESO=`ps -a | grep $NOMBRE_PROCESO | awk '{print $1}'`
-  echo "Programa iniciado con pid: $PID_PROCESO"
-  $BINDIR./glog.sh "start" "Programa iniciado con pid: $PID_PROCESO"
+  echo "Se inicia proc.sh con pid: $PID_PROCESO"
+  $BINDIR./glog.sh "start" "Se inicia proc.sh con pid: $PID_PROCESO"
 
 else
   echo "El ambiente no fue inicializado."
